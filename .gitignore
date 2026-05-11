@@ -27,7 +27,6 @@ dev-dist
 
 .vercel
 .env*.local
-.env
 node_modules
 
 .vercel
