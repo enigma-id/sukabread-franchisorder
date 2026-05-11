@@ -7,6 +7,9 @@ import "./index.css";
 import { EnigmaProvider, ToastContainer } from "@/components";
 import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter } from "react-router-dom";
+import { bootstrap } from "./services/bootstrap.tsx";
+
+bootstrap();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
