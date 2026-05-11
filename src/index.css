@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@plugin "daisyui/index.js" {
+  logs: true;
+  exclude: input, modal, drawer, table;
+}
+
+@import './components/ui/drawer/drawer.css';
+@import './components/ui/file/file.css';
+@import './components/ui/input/input.css';
+@import './components/ui/modal/modal.css';
+@import './components/ui/select/select.css';
+@import './components/ui/table/table.css';
+@import './components/ui/card/card.css';
+@import './components/app/app.css';
+
+@plugin "daisyui/theme" {
+  name: 'sukabread';
+  default: true;
+  prefersdark: false;
+  color-scheme: 'light';
+
+  --color-base-100: oklch(1 0 0);
+  --color-base-200: oklch(0.978 0.003 264.91);
+  --color-base-300: oklch(0.940 0.007 264.91);
+  --color-base-content: oklch(0.35 0.01 264.91);
+  --color-base-content-shadow: oklch(0.35 0.01 264.91/0.12);
+  --color-primary: oklch(0.701 0.233 49.71);
+  --color-primary-shadow: oklch(0.701 0.233 49.71/0.12);
+  --color-primary-content: oklch(100% 0 0);
+  --color-secondary: oklch(0.975 0.003 0);
+  --color-secondary-shadow: oklch(0.975 0.003 0/0.08);
+  --color-secondary-content: oklch(35% 0.01 0);
+  --color-accent: oklch(0.975 0.006 227.17);
+  --color-accent-shadow: oklch(0.975 0.006 227.17/0.08);
+  --color-accent-content: oklch(35% 0.01 227.17);
+  --color-neutral: oklch(25% 0 0);
+  --color-neutral-shadow: oklch(25% 0 0/0.12);
+  --color-neutral-content: oklch(98% 0 0);
+  --color-info: oklch(60% 0.126 221.723);
+  --color-info-shadow: oklch(60% 0.126 221.723/0.12);
+  --color-info-content: oklch(100% 0 0);
+  --color-success: oklch(62% 0.194 149.214);
+  --color-success-shadow: oklch(62% 0.194 149.214/0.12);
+  --color-success-content: oklch(100% 0 0);
+  --color-warning: oklch(85% 0.199 91.936);
+  --color-warning-shadow: oklch(85% 0.199 91.936/0.12);
+  --color-warning-content: oklch(30% 0.02 91.936);
+  --color-error: oklch(0.627 0.224 27.08);
+  --color-error-shadow: oklch(0.627 0.224 27.08/0.12);
+  --color-error-content: oklch(100% 0 0);
+
+  --radius-selector: 1rem;
+  --radius-field: 0.75rem;
+  --radius-box: 0.75rem;
+
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+
+  --depth: 1;
+  --noise: 1;
+}
+
+:root {
+  color-scheme: light;
+}
+
+@layer base {
+  body {
+    @apply antialiased text-base-content bg-base-200 font-sans selection:bg-primary/20;
+    -webkit-tap-highlight-color: transparent;
+    color-scheme: light;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-xl border border-white/40 shadow-sm;
+  }
+
+  .premium-shadow {
+    box-shadow: 0 10px 40px -10px oklch(var(--color-primary) / 0.15);
+  }
+
+  .nav-active {
+    @apply text-primary scale-110 transition-all duration-300;
+  }
+
+  /* Franchisee-v2 inspired patterns */
+  .pattern-dots {
+    background-image: radial-gradient(currentColor 1.5px, transparent 1.5px);
+    background-size: 16px 16px;
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-base-300 rounded-full;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+html {
+  font-family: Roboto, sans-serif;
+}

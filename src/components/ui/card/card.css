@@ -1,0 +1,443 @@
+/* ═══════════════════════════════════════════════════════════
+   Premium Card Design System v2 — Stylish & Icon-Enriched
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Stat Card (As per reference image) ─────────────────────── */
+.card-stat {
+  position: relative;
+  background: oklch(1 0 0);
+  border: 1px solid oklch(0.92 0.005 264.91); /* Light border */
+  border-radius: 12px; /* Soft rounded corners */
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 12px oklch(0.35 0.01 264.91 / 0.03); /* Very soft shadow */
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 5.5rem;
+}
+
+/* Label text (e.g. KARTU KREDIT) */
+.card-stat .stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: oklch(0.3 0.01 264.91); /* Dark greyish blue */
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Value text (e.g. Rp0) */
+.card-stat .stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: oklch(0.15 0.02 264.91); /* Very dark navy */
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+/* Content container */
+.card-stat .stat-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Decorative Icon Container */
+.card-stat .stat-icon-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background-color: oklch(0.96 0.01 264.91); /* Very light blue bg */
+}
+
+/* Icon styling */
+.card-stat .stat-icon {
+  color: oklch(0.55 0.18 260); /* Bright Blue */
+  width: 1.75rem;
+  height: 1.75rem;
+  stroke-width: 2;
+}
+
+/* Decorative Background Wave/Blob */
+.card-stat .stat-bg-deco {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 60%;
+  height: 100%;
+  background: radial-gradient(
+    circle at bottom right,
+    oklch(0.95 0.02 260 / 0.8) 0%,
+    oklch(0.97 0.01 260 / 0.5) 40%,
+    transparent 70%
+  );
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 0 0 12px 0;
+}
+
+/* ── Info Card ────────────────────────────────────────────── */
+.card-info {
+  position: relative;
+  background: oklch(1 0 0);
+  border: 1px solid oklch(0.92 0.005 264.91);
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 2px oklch(0.35 0.01 264.91 / 0.04),
+    0 4px 16px oklch(0.35 0.01 264.91 / 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.card-info:hover {
+  box-shadow:
+    0 2px 4px oklch(0.35 0.01 264.91 / 0.06),
+    0 8px 24px oklch(0.35 0.01 264.91 / 0.06);
+  border-color: oklch(0.88 0.01 264.91);
+}
+
+.card-info .card-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid oklch(0.94 0.005 264.91);
+}
+
+.card-info .card-section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  background: linear-gradient(135deg,
+    oklch(0.701 0.233 49.71 / 0.1),
+    oklch(0.701 0.233 49.71 / 0.04));
+  color: oklch(0.701 0.233 49.71);
+  flex-shrink: 0;
+}
+
+.card-info .card-section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: oklch(0.4 0.01 264.91);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Override old ::before if present */
+.card-info .card-section-title::before {
+  display: none;
+}
+
+.card-info .info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed oklch(0.95 0.003 264.91);
+  transition: all 0.15s ease;
+}
+
+.card-info .info-row:last-child {
+  border-bottom: none;
+}
+
+.card-info .info-row:hover {
+  background: oklch(0.985 0.002 264.91);
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.card-info .info-label {
+  font-size: 0.8125rem;
+  color: oklch(0.55 0.01 264.91);
+}
+
+.card-info .info-value {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: oklch(0.28 0.01 264.91);
+}
+
+.card-info .info-value.mono {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+}
+
+.card-info .info-row-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.75rem 0 0.25rem;
+  margin-top: 0.25rem;
+  border-top: 2px solid oklch(0.92 0.005 264.91);
+  border-bottom: none;
+}
+
+.card-info .info-row-total .info-label {
+  font-weight: 600;
+  color: oklch(0.28 0.01 264.91);
+}
+
+.card-info .info-row-total .info-value {
+  font-weight: 700;
+  color: oklch(0.701 0.233 49.71);
+  font-size: 0.9375rem;
+}
+
+/* ── Table Card ───────────────────────────────────────────── */
+.card-table {
+  position: relative;
+  background: oklch(1 0 0);
+  border: 1px solid oklch(0.92 0.005 264.91);
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 2px oklch(0.35 0.01 264.91 / 0.04),
+    0 4px 16px oklch(0.35 0.01 264.91 / 0.04);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-table:hover {
+  box-shadow:
+    0 2px 4px oklch(0.35 0.01 264.91 / 0.06),
+    0 8px 24px oklch(0.35 0.01 264.91 / 0.06);
+}
+
+.card-table .table-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid oklch(0.94 0.005 264.91);
+  background: linear-gradient(180deg, oklch(0.995 0.001 264.91), oklch(0.985 0.002 264.91));
+}
+
+.card-table .table-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg,
+    oklch(0.701 0.233 49.71 / 0.1),
+    oklch(0.701 0.233 49.71 / 0.04));
+  color: oklch(0.701 0.233 49.71);
+  flex-shrink: 0;
+}
+
+.card-table .table-header-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: oklch(0.4 0.01 264.91);
+}
+
+/* Remove old ::before */
+.card-table .table-header-title::before {
+  display: none;
+}
+
+/* ── Form Card ────────────────────────────────────────────── */
+.card-form {
+  position: relative;
+  background: oklch(1 0 0);
+  border: 1px solid oklch(0.92 0.005 264.91);
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 2px oklch(0.35 0.01 264.91 / 0.04),
+    0 4px 16px oklch(0.35 0.01 264.91 / 0.04);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+    oklch(0.701 0.233 49.71),
+    oklch(0.78 0.18 60),
+    oklch(0.85 0.15 70));
+  opacity: 0.8;
+}
+
+.card-form:focus-within {
+  border-color: oklch(0.701 0.233 49.71 / 0.2);
+  box-shadow:
+    0 1px 2px oklch(0.35 0.01 264.91 / 0.04),
+    0 4px 16px oklch(0.35 0.01 264.91 / 0.04),
+    0 0 0 3px oklch(0.701 0.233 49.71 / 0.06);
+}
+
+.card-form:focus-within::before {
+  opacity: 1;
+}
+
+/* ── Hero Card ────────────────────────────────────────────── */
+.card-hero {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: linear-gradient(135deg,
+    oklch(0.701 0.233 49.71),
+    oklch(0.62 0.24 42),
+    oklch(0.58 0.22 35));
+  box-shadow:
+    0 4px 12px oklch(0.701 0.233 49.71 / 0.2),
+    0 16px 40px oklch(0.701 0.233 49.71 / 0.12);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hero::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 55%;
+  height: 160%;
+  background: radial-gradient(
+    ellipse at center,
+    oklch(1 0 0 / 0.1) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+.card-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: -15%;
+  width: 55%;
+  height: 130%;
+  background: radial-gradient(
+    ellipse at center,
+    oklch(0 0 0 / 0.1) 0%,
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.card-hero:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 6px 16px oklch(0.701 0.233 49.71 / 0.25),
+    0 20px 48px oklch(0.701 0.233 49.71 / 0.15);
+}
+
+.card-hero .hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.card-hero .hero-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  background: oklch(1 0 0 / 0.15);
+  backdrop-filter: blur(8px);
+  color: oklch(1 0 0);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.08);
+}
+
+.card-hero .hero-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: oklch(1 0 0 / 0.8);
+  margin-bottom: 0.25rem;
+}
+
+.card-hero .hero-value {
+  font-size: 2rem;
+  font-weight: 800;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  color: oklch(1 0 0);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* ── Category Tag ─────────────────────────────────────────── */
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: oklch(1 0 0);
+  background: linear-gradient(135deg,
+    oklch(0.701 0.233 49.71),
+    oklch(0.62 0.24 42));
+  box-shadow: 0 2px 6px oklch(0.701 0.233 49.71 / 0.3);
+}
+
+/* ── Pagination Footer ────────────────────────────────────── */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid oklch(0.94 0.005 264.91);
+  background: linear-gradient(180deg, oklch(0.995 0.001 264.91), oklch(0.99 0.002 264.91));
+}
+
+.card-footer-text {
+  font-size: 0.75rem;
+  color: oklch(0.55 0.01 264.91);
+}
+
+/* ── Animations ───────────────────────────────────────────── */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-animate {
+  animation: cardFadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.card-animate:nth-child(1) { animation-delay: 0ms; }
+.card-animate:nth-child(2) { animation-delay: 80ms; }
+.card-animate:nth-child(3) { animation-delay: 160ms; }
+.card-animate:nth-child(4) { animation-delay: 240ms; }
+.card-animate:nth-child(5) { animation-delay: 320ms; }
+.card-animate:nth-child(6) { animation-delay: 400ms; }
+.card-animate:nth-child(7) { animation-delay: 480ms; }
