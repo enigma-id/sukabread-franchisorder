@@ -1,77 +1,101 @@
-/** RTK Query-style API error shape */
+/**
+ * Core API type definitions for the WMS client application
+ */
+
+/**
+ * Base API error structure
+ */
 export interface ApiError {
-  status?: number | string;
+  status?: number;
   data?: {
     message?: string;
+    errors?: {
+      id?: string;
+      [key: string]: string | string[] | unknown;
+    };
     error?: string;
-    errors?: Record<string, string | string[]>;
   };
   message?: string;
 }
 
-export interface User {
-  id: string;
-  username: string;
-  name: string;
-  role: "owner" | "manager" | "admin";
-}
-
-export interface Outlet {
-  id: string;
-  name: string;
-  city: string;
-  address: string;
-}
-
-export interface Franchise {
-  id: string;
-  name: string;
-}
-
-export interface CatalogItem {
-  catalog: {
-    id: number;
-    code: string;
-    name: string;
-    unit_price: number;
-    image: string;
-    weight: number;
-    volume: number;
-    is_bundle: 0 | 1;
-    description: string;
+/**
+ * API error response from RTK Query
+ */
+export interface ApiErrorResponse {
+  status: number;
+  data: {
+    message?: string;
+    errors?: Record<string, string | string[]>;
+    error?: string;
   };
 }
 
-export interface CartItem {
-  catalog_id: number;
-  quantity: number;
+/**
+ * Base API response structure
+ */
+export interface ApiResponse<T = unknown> {
+  success?: boolean;
+  message?: string;
+  data?: T;
+  meta?: Record<string, unknown>;
 }
 
-export interface Bank {
-  id: number;
-  name: string;
-  alias_name: string;
-  account_name: string;
-  account_number: string;
-  is_payment_gateway: 0 | 1;
+/**
+ * Pagination metadata
+ */
+export interface PaginationMeta {
+  page?: number;
+  limit?: number;
+  total?: number;
+  total_pages?: number;
+  has_next?: boolean;
+  has_prev?: boolean;
+  [key: string]: unknown;
 }
 
-export interface Order {
-  id: number;
-  code: string;
-  items: any[];
-  total_bill: number;
-  order_status: string;
-  delivery_status: string;
-  payment_status: string;
-  shipping_charges: number;
-  ordered_at: string;
-  shipping_date: string;
-  bank?: Bank;
-  note?: string;
-  payment_expired_at?: string;
-  payment_url?: string;
-  is_payment_gateway?: number;
-  subtotal_gross?: number;
-  expedisi?: string;
+/**
+ * Paginated API response
+ */
+export interface PaginatedResponse<T = unknown> extends ApiResponse<T[]> {
+  data: T[];
+  meta: PaginationMeta;
+}
+
+/**
+ * Type guard to check if an error is an ApiError
+ */
+export function isApiError(error: unknown): error is ApiError {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    ("status" in error || "data" in error)
+  );
+}
+
+/**
+ * Type guard to check if response is a successful API response
+ */
+export function isApiResponse<T>(
+  response: unknown,
+): response is ApiResponse<T> {
+  return (
+    typeof response === "object" &&
+    response !== null &&
+    ("success" in response || "message" in response || "data" in response)
+  );
+}
+
+/**
+ * Type guard to check if response is a paginated response
+ */
+export function isPaginatedResponse<T>(
+  response: unknown,
+): response is PaginatedResponse<T> {
+  return (
+    isApiResponse<T[]>(response) &&
+    Array.isArray(response.data) &&
+    response.meta !== undefined &&
+    typeof response.meta === "object" &&
+    response.meta !== null
+  );
 }

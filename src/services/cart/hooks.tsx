@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from "react-redux";
 import { useEnigmaUI } from "@/components";
 import {
   useCheckoutMutation,
   useGetPaymentMethodsQuery,
-  useGetScheduleMutation,
+  useLazyGetPaymentMethodsQuery,
+  useGetWarehouseQuery,
+  useLazyGetWarehouseQuery,
+  useLazyGetRegionQuery,
 } from "./api";
 import { $clearCart, $addItem, $removeItem, $updateQuantity } from "./slice";
 import type { RootState } from "../store";
-import type { CatalogItem } from "../types/api";
 import { useFormActions } from "../form/hooks";
 
 export const useCart = () => {
@@ -16,21 +19,24 @@ export const useCart = () => {
   const { items, total } = useSelector((state: RootState) => state.cart);
 
   const [checkoutMutation, checkoutResult] = useCheckoutMutation();
-  const [getScheduleMutation, getScheduleResult] = useGetScheduleMutation();
+  const [triggerPayment, paymentResult] = useLazyGetPaymentMethodsQuery();
+  const [triggerWarehouse, warehouseResult] = useLazyGetWarehouseQuery();
+  const [triggerRegion, regionResult] = useLazyGetRegionQuery();
   const { failureWithTimeout } = useFormActions();
 
   // Use query hook directly for payment methods as it's typically auto-fetched
-  const paymentMethodsQuery = useGetPaymentMethodsQuery();
+  const paymentMethodsQuery = useGetPaymentMethodsQuery({});
+  const warehouseQuery = useGetWarehouseQuery({});
 
-  const addItem = (product: CatalogItem, quantity: number) => {
+  const addItem = (product: any, quantity: number) => {
     dispatch($addItem({ ...product, quantity }));
   };
 
-  const removeItem = (id: number) => {
+  const removeItem = (id: string) => {
     dispatch($removeItem(id));
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     dispatch($updateQuantity({ id, quantity }));
   };
 
@@ -38,17 +44,11 @@ export const useCart = () => {
     dispatch($clearCart());
   };
 
-  const doCheckout = async (payload: {
-    payment_method: {
-      bank_id: string;
-      phone?: string;
-    };
-    shipping_at: string;
-  }) => {
+  const doCheckout = async (payload: any) => {
     try {
       const cartItems = items.map((i) => ({
-        catalog_id: i.catalog.id,
-        quantity: i.quantity,
+        catalog_id: i.id,
+        quantity_ordered: i.quantity,
       }));
 
       const result = await checkoutMutation({
@@ -67,32 +67,62 @@ export const useCart = () => {
     }
   };
 
-  const doFetchSchedule = async () => {
+  const getWarehouse = async (params: any) => {
     try {
-      const cartItems = items.map((i) => ({
-        catalog_id: i.catalog.id,
-        quantity: i.quantity,
-      }));
-      return await getScheduleMutation({ items: cartItems }).unwrap();
+      await triggerWarehouse(params).unwrap();
     } catch (err) {
       failureWithTimeout(err);
-      // We don't toast here as it's often called automatically
     }
   };
+
+  const getPayment = async (params: any) => {
+    try {
+      await triggerPayment(params).unwrap();
+    } catch (err) {
+      failureWithTimeout(err);
+    }
+  };
+
+  const getRegion = async (params: any) => {
+    try {
+      await triggerRegion(params).unwrap();
+    } catch (err) {
+      failureWithTimeout(err);
+    }
+  };
+
+  // const doFetchSchedule = async () => {
+  //   try {
+  //     const cartItems = items.map((i) => ({
+  //       catalog_id: i.catalog.id,
+  //       quantity: i.quantity,
+  //     }));
+  //     return await getScheduleMutation({ items: cartItems }).unwrap();
+  //   } catch (err) {
+  //     failureWithTimeout(err);
+  //     // We don't toast here as it's often called automatically
+  //   }
+  // };
 
   return {
     // Actions
     doCheckout,
-    doFetchSchedule,
+    // doFetchSchedule,
     addItem,
     removeItem,
     updateQuantity,
     clearCart,
+    getWarehouse,
+    getPayment,
+    getRegion,
 
     // Results/States
     checkoutResult,
-    getScheduleResult,
+    paymentResult,
+    warehouseResult,
+    regionResult,
     paymentMethodsQuery,
+    warehouseQuery,
 
     // State
     items,

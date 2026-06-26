@@ -15,7 +15,7 @@ const LoginScreen = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
-      username: username,
+      identifier: username,
       password,
     };
 
@@ -65,8 +65,8 @@ const LoginScreen = () => {
                 <User size={18} className="text-[#a0aabf]" strokeWidth={2} />
               }
               error={
-                typeof FormState?.errors?.username === "string"
-                  ? FormState.errors.username
+                typeof FormState?.errors?.identifier === "string"
+                  ? FormState.errors.identifier
                   : undefined
               }
             />
@@ -108,10 +108,10 @@ const LoginScreen = () => {
         </div>
 
         <p className="text-center mt-10 text-[9px] font-black uppercase tracking-[0.4em] text-base-content/40">
-          Powered by Enigma Technology <br />
-          <span className="text-primary/60 italic">
+          Powered by Enigma <br />
+          {/* <span className="text-primary/60 italic">
             Premium Enterprise v2.0
-          </span>
+          </span> */}
         </p>
       </motion.div>
     </div>

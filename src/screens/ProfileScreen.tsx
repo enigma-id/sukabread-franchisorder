@@ -1,23 +1,13 @@
 import { useAuth } from "../services/auth/hooks";
-import {
-  LogOut,
-  Shield,
-  UserCircle2,
-  Store,
-  MapPin,
-  Building2,
-  Hash,
-  Crown,
-} from "lucide-react";
+import { LogOut, Shield, UserCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEnigmaUI, Modal } from "../components";
 import SectionTitle from "../components/app/SectionTitle";
 import StickyHeader from "../components/app/StickyHeader";
 
 const ProfileScreen = () => {
-  const { user, outlet, franchise, doLogout, getMeResult } = useAuth();
+  const { doLogout, session } = useAuth();
   const { openModal, closeModal } = useEnigmaUI();
-  const isFetching = getMeResult.isLoading;
 
   const handleLogout = () => {
     openModal({
@@ -63,7 +53,7 @@ const ProfileScreen = () => {
     });
   };
 
-  if (isFetching && !user) {
+  if (!session?.user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-base-100">
         <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
@@ -73,7 +63,6 @@ const ProfileScreen = () => {
       </div>
     );
   }
-
 
   return (
     <div className="min-h-screen bg-base-200 pb-40">
@@ -95,7 +84,9 @@ const ProfileScreen = () => {
             <div className="w-28 h-28 rounded-[2.5rem] bg-white shadow-2xl flex items-center justify-center mb-6 relative group/avatar">
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent rounded-[2.5rem]" />
               <span className="text-5xl font-black text-primary italic relative z-10">
-                {user?.name?.charAt(0) || user?.username?.charAt(0) || "U"}
+                {session?.user?.name?.charAt(0) ||
+                  session?.user?.username?.charAt(0) ||
+                  "U"}
               </span>
               <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 border-4 border-white rounded-2xl shadow-lg flex items-center justify-center">
                 <Shield size={16} className="text-white" />
@@ -103,23 +94,8 @@ const ProfileScreen = () => {
             </div>
 
             <h2 className="text-3xl font-black text-white tracking-tight leading-none mb-3">
-              {user?.name || "Premium Member"}
+              {session?.user?.name || "Premium Member"}
             </h2>
-            
-            <div className="flex flex-wrap justify-center gap-2">
-              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20">
-                <Crown size={14} className="text-yellow-400" />
-                <span className="text-[10px] font-black uppercase tracking-[0.1em] text-white">
-                  {user?.role || "Franchisee"}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 bg-black/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/5">
-                <Hash size={14} className="text-white/60" />
-                <span className="text-[10px] font-bold text-white/80">
-                  {user?.id?.split('-').pop() || "8821"}
-                </span>
-              </div>
-            </div>
           </div>
 
           <svg
@@ -141,7 +117,10 @@ const ProfileScreen = () => {
           <div className="grid grid-cols-1 gap-8">
             {/* Account Details */}
             <section>
-              <SectionTitle title="ACCOUNT INFO" subtitle="Security & Profile" />
+              <SectionTitle
+                title="ACCOUNT INFO"
+                subtitle="Security & Profile"
+              />
               <div className="bg-white rounded-[2.5rem] p-6 border border-base-200 shadow-sm space-y-5">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary border border-primary/10">
@@ -152,31 +131,14 @@ const ProfileScreen = () => {
                       Username
                     </span>
                     <span className="text-sm font-black text-base-content">
-                      @{user?.username}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="h-px bg-base-100" />
-
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary border border-primary/10">
-                    <Building2 size={22} />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-base-content/30">
-                      Franchise Group
-                    </span>
-                    <span className="text-sm font-black text-base-content">
-                      {franchise?.name || "SukaBread Utama"}
+                      @{session?.user?.username}
                     </span>
                   </div>
                 </div>
               </div>
             </section>
 
-            {/* Outlet Details */}
-            <section>
+            {/* <section>
               <SectionTitle title="OUTLET INFO" subtitle="Store Location" />
               <div className="bg-white rounded-[2.5rem] p-6 border border-base-200 shadow-sm space-y-5">
                 <div className="flex items-center gap-4">
@@ -212,7 +174,7 @@ const ProfileScreen = () => {
                   </div>
                 </div>
               </div>
-            </section>
+            </section> */}
           </div>
 
           {/* Logout Button */}
@@ -224,7 +186,7 @@ const ProfileScreen = () => {
             Sign Out
           </button>
 
-          <div className="text-center pb-12">
+          {/* <div className="text-center pb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="h-px w-8 bg-base-content/10" />
               <div className="w-1.5 h-1.5 rounded-full bg-primary/20" />
@@ -236,7 +198,7 @@ const ProfileScreen = () => {
                 Premium Edition v2.1.0
               </span>
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -23,7 +23,7 @@ export const Input: React.FC<InputProps> = ({
   hint,
   type = "text",
   size = "md",
-  variant = "default",
+  variant = "primary",
   prefix,
   suffix,
   disabled,
@@ -89,7 +89,7 @@ export const Input: React.FC<InputProps> = ({
       "!pl-10": prefix,
       "!pr-10": type === "password" || suffix,
     },
-    className
+    className,
   );
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,7 +155,7 @@ export const Input: React.FC<InputProps> = ({
             const normalized = normalizeDecimalString(
               e.currentTarget.value,
               min,
-              max
+              max,
             );
             // if changed, forward a patched event so parent receives normalized value
             if (normalized !== e.currentTarget.value) {
@@ -236,9 +236,15 @@ export const Input: React.FC<InputProps> = ({
         {type === "password" ? (
           <div className="absolute right-3 cursor-pointer">
             {secured === "password" ? (
-              <Eye className="w-5 h-5 text-gray-500" onClick={() => setSecured("text")} />
+              <Eye
+                className="w-5 h-5 text-gray-500"
+                onClick={() => setSecured("text")}
+              />
             ) : (
-              <EyeOff className="w-5 h-5 text-gray-500" onClick={() => setSecured("password")} />
+              <EyeOff
+                className="w-5 h-5 text-gray-500"
+                onClick={() => setSecured("password")}
+              />
             )}
           </div>
         ) : type === "time" ? (

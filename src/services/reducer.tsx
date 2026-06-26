@@ -5,9 +5,9 @@ import { authApi } from "./auth/api";
 import { catalogApi } from "./catalog/api";
 import { orderApi } from "./order/api";
 import { cartApi } from "./cart/api";
-import authReducer, { $signout } from "./auth/slice";
 import cartReducer from "./cart/slice";
 import { formReducer } from "./form/slice";
+import { authReducer, logout } from "./auth/slice";
 
 const appReducer = combineReducers({
   auth: authReducer,
@@ -33,7 +33,7 @@ export const rootReducer: Reducer<AppState, UnknownAction> = (
   state,
   action,
 ) => {
-  if (action.type === $signout.type) {
+  if (action.type === logout.type) {
     if (typeof window !== "undefined") {
       localStorage.removeItem("persist:root");
     }

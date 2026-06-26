@@ -1,5 +1,6 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { CatalogItem } from "../types/api";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createSlice } from "@reduxjs/toolkit";
+import type { CatalogItem } from "../types/catalog";
 
 interface CartStateItem extends CatalogItem {
   quantity: number;
@@ -16,16 +17,16 @@ const initialState: CartState = {
 };
 
 const calculateTotal = (items: CartStateItem[]) => {
-  return items.reduce((sum, item) => sum + item.catalog.unit_price * item.quantity, 0);
+  return items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0);
 };
 
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    $addItem: (state, action: PayloadAction<CatalogItem & { quantity?: number }>) => {
+    $addItem: (state, action) => {
       const qty = action.payload.quantity || 1;
-      const existing = state.items.find((i) => i.catalog.id === action.payload.catalog.id);
+      const existing = state.items.find((i) => i.id === action.payload.id);
       if (existing) {
         existing.quantity += qty;
       } else {
@@ -33,19 +34,16 @@ export const cartSlice = createSlice({
       }
       state.total = calculateTotal(state.items);
     },
-    $removeItem: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter((i) => i.catalog.id !== action.payload);
+    $removeItem: (state, action) => {
+      state.items = state.items.filter((i) => i.id !== action.payload);
       state.total = calculateTotal(state.items);
     },
-    $updateQuantity: (
-      state,
-      action: PayloadAction<{ id: number; quantity: number }>,
-    ) => {
-      const item = state.items.find((i) => i.catalog.id === action.payload.id);
+    $updateQuantity: (state, action) => {
+      const item = state.items.find((i) => i.id === action.payload.id);
       if (item) {
         item.quantity = action.payload.quantity;
         if (item.quantity <= 0) {
-          state.items = state.items.filter((i) => i.catalog.id !== action.payload.id);
+          state.items = state.items.filter((i) => i.id !== action.payload.id);
         }
       }
       state.total = calculateTotal(state.items);

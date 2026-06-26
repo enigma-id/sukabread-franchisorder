@@ -1,59 +1,36 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "../baseQuery";
-import type { CartItem } from "../types/api";
-
-export interface CheckoutRequest {
-  items: CartItem[];
-  payment_method: {
-    bank_id: string;
-    phone?: string;
-  };
-  shipping_at: string; // YYYY-MM-DD
-}
-
-export interface PaymentMethod {
-  id: string;
-  name: string;
-  is_payment_gateway?: number;
-}
-
-export interface ScheduleItem {
-  date: string;
-  date_string: string;
-  cost: number;
-}
-
-export interface ScheduleResponse {
-  schedules: ScheduleItem[];
-  vendor_name: string;
-  estimated_arrival: number;
-  default_cost: number;
-  total_weight: number;
-}
-
-export interface ScheduleParams {
-  items: CartItem[];
-}
 
 export const cartApi = createApi({
   reducerPath: "cartApi",
   baseQuery,
   endpoints: (builder) => ({
-    checkout: builder.mutation<any, CheckoutRequest>({
+    checkout: builder.mutation({
       query: (body) => ({
-        url: "/cart/checkout",
+        url: "/sales/order",
         method: "POST",
         body,
       }),
     }),
-    getPaymentMethods: builder.query<PaymentMethod[], void>({
-      query: () => "/cart/payment-method",
+    getPaymentMethods: builder.query({
+      query: (params) => ({
+        url: "/payment/method",
+        method: "GET",
+        params,
+      }),
     }),
-    getSchedule: builder.mutation<ScheduleResponse, ScheduleParams>({
-      query: (body) => ({
-        url: "/cart/schedule",
-        method: "POST",
-        body,
+    getWarehouse: builder.query({
+      query: (params) => ({
+        url: "/warehouse",
+        method: "GET",
+        params,
+      }),
+    }),
+    getRegion: builder.query({
+      query: (params) => ({
+        url: "/regions/search",
+        method: "GET",
+        params,
       }),
     }),
   }),
@@ -62,5 +39,8 @@ export const cartApi = createApi({
 export const {
   useCheckoutMutation,
   useGetPaymentMethodsQuery,
-  useGetScheduleMutation,
+  useLazyGetPaymentMethodsQuery,
+  useGetWarehouseQuery,
+  useLazyGetWarehouseQuery,
+  useLazyGetRegionQuery,
 } = cartApi;

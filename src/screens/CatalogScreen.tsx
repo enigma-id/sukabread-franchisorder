@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { useCatalog } from "../services/catalog/hooks";
 import { useCart } from "../services/cart/hooks";
-import type { CatalogItem } from "../services/types/api";
 import { PackageX, ChevronLeft, ChevronRight } from "lucide-react";
 import StickyHeader from "../components/app/StickyHeader";
 import ProductCard from "../components/app/ProductCard";
 import { motion, AnimatePresence } from "framer-motion";
+import type { CatalogItem } from "@/services/types/catalog";
 
 const CatalogScreen = () => {
   const [params, setParams] = useState({
     page: 1,
     limit: 10,
     search: "",
-    order_by: "catalog_id__name",
   });
 
   const { query } = useCatalog(params);
@@ -69,9 +68,9 @@ const CatalogScreen = () => {
               exit={{ opacity: 0 }}
               className="grid grid-cols-2 gap-4"
             >
-              {products.map((product, index) => (
+              {products.map((product: CatalogItem, index: number) => (
                 <ProductCard
-                  key={product.catalog.id || `product-${index}`}
+                  key={product?.id || `product-${index}`}
                   product={product}
                   onAdd={handleAddToCart}
                 />

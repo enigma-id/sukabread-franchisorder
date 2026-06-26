@@ -51,6 +51,7 @@ input[disabled] {
     --tw-shadow-color: var(--color-base-content-shadow);
 }
 .input-primary {
+    color: var(--color-base-content) !important;
     --input-color: var(--color-primary);
     --tw-shadow-color: var(--color-primary-shadow);
 }

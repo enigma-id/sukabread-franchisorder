@@ -1,3 +1,4 @@
+import type { RegionAdministrativeArea } from "@/services/types/region";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -5,7 +6,7 @@ export function currencyFormat(
   value: string | number | null | undefined,
   usingText = true,
   prefix: string = "Rp",
-  nullText = "-"
+  nullText = "-",
 ): string {
   const p = usingText ? prefix : "";
 
@@ -20,7 +21,7 @@ export function currencyFormat(
 export function dateFormat(
   v?: string | Date | dayjs.Dayjs | null,
   format: string = "DD/MM/YYYY HH:mm",
-  nullText: string = "-"
+  nullText: string = "-",
 ): string {
   if (!v) return nullText;
 
@@ -87,7 +88,24 @@ export function capitalizeFirst(str: string) {
 export function findByKeyValue<T, K extends keyof T>(
   array: readonly T[],
   key: K,
-  value: T[K]
+  value: T[K],
 ): T | undefined {
   return array.find((item) => item[key] === value);
+}
+
+export function formatRegion(
+  item?: {
+    name?: string;
+    administrative_area?: RegionAdministrativeArea;
+  } | null,
+): string {
+  if (!item) return "";
+  const parts = [];
+  const area = item.administrative_area;
+  if (area?.village) parts.push(area.village);
+  if (area?.district) parts.push(area.district);
+  if (area?.regency) parts.push(area.regency);
+  if (area?.province) parts.push(area.province);
+  if (area?.country) parts.push(area.country);
+  return parts.filter(Boolean).join(", ");
 }

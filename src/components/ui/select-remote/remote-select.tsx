@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef, type KeyboardEvent } from "react";
@@ -154,9 +155,10 @@ export const RemoteSelect = <T,>({
       }
 
       const res = hook.data;
-      const page = res.meta?.page ?? 1;
-      const hasNext = res.meta?.has_next ?? false;
-      const newData = res.data ?? [];
+      const isArray = Array.isArray(res);
+      const page = isArray ? 1 : (res.meta?.page ?? 1);
+      const hasNext = isArray ? false : (res.meta?.has_next ?? false);
+      const newData = isArray ? res : (res.data ?? []);
 
       // Ketika page === 1, selalu replace data lama dengan data baru (bisa empty array)
       // Ketika page > 1, append data baru ke data lama
@@ -237,11 +239,12 @@ export const RemoteSelect = <T,>({
   if (hidden) return null;
 
   return (
-    <div className='w-full'>
+    <div className="w-full">
       <Dropdown
         disabled={disabled}
         trigger={
           <Input
+            variant="primary"
             required={required}
             label={label}
             placeholder={placeholder}
@@ -258,11 +261,11 @@ export const RemoteSelect = <T,>({
               !multi && value && onClear ? (
                 <Button
                   onClick={onClear}
-                  variant='error'
-                  shape='circle'
-                  size='xs'
-                  styleType='soft'
-                  className='text-error hover:text-base-100'
+                  variant="error"
+                  shape="circle"
+                  size="xs"
+                  styleType="soft"
+                  className="text-error hover:text-base-100"
                   onMouseDown={(e) => e.preventDefault()}
                 >
                   &times;
@@ -291,13 +294,13 @@ export const RemoteSelect = <T,>({
           />
         }
         open={open}
-        className='flex-1 w-full'
-        contentClassName='px-0 w-full bg-white'
+        className="flex-1 w-full"
+        contentClassName="px-0 w-full bg-white"
       >
         <div
           ref={listRef}
           onScroll={handleScroll}
-          className='max-h-80 overflow-auto border border-base-200 rounded'
+          className="max-h-80 overflow-auto border border-base-200 rounded"
         >
           {listData.map((item, i) => {
             const isCreate = (item as CreateItem).is_create;
@@ -347,12 +350,12 @@ export const RemoteSelect = <T,>({
             );
           })}
 
-          {hook?.isLoading && <div className='p-2 text-center'>Loading...</div>}
+          {hook?.isLoading && <div className="p-2 text-center">Loading...</div>}
           {!hook?.isLoading && currentData.length === 0 && (
-            <div className='p-2 text-center text-gray-500'>No data</div>
+            <div className="p-2 text-center text-gray-500">No data</div>
           )}
           {hook?.isError && !hook?.isLoading && (
-            <div className='p-2 text-center text-red-500'>
+            <div className="p-2 text-center text-red-500">
               Failed to load data
             </div>
           )}
@@ -360,16 +363,16 @@ export const RemoteSelect = <T,>({
       </Dropdown>
 
       {multi && values && values.length > 0 && (
-        <div className='flex flex-wrap gap-2 mt-2'>
+        <div className="flex flex-wrap gap-2 mt-2">
           {values.map((v, i) => (
             <div
               key={i}
-              className='flex items-center gap-1 bg-base-200 px-2 py-1 rounded-full text-sm'
+              className="flex items-center gap-1 bg-base-200 px-2 py-1 rounded-full text-sm"
             >
               {resolveLabel?.(v) ?? String(v)}
               <button
                 onClick={() => handleRemove(i)}
-                className='ml-1 text-error cursor-pointer'
+                className="ml-1 text-error cursor-pointer"
               >
                 &times;
               </button>

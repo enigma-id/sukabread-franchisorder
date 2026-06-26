@@ -5,13 +5,13 @@ import { saveAs } from "file-saver";
 import { logger } from "@/utils/logger";
 import { isAuthError } from "@/utils/errors";
 import type { ApiError } from "./types/api";
-import { $signout } from "./auth/slice";
+import { logout } from "./auth/slice";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_BASE_URL,
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState;
-    const token = state?.auth?.token;
+    const token = state?.auth?.session?.access_token;
 
     headers.set("Accept", "application/json");
     headers.set("Content-Type", "application/json");
@@ -80,7 +80,7 @@ export const baseQuery: BaseQueryFn<
     if (isAuthError(error)) {
       logger.warn("Authentication error detected, signing out user");
       // Dispatch signout action to clear auth state
-      api.dispatch($signout());
+      api.dispatch(logout());
     }
   }
 

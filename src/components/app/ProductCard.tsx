@@ -1,8 +1,8 @@
 import { ShoppingCart, Plus, Minus } from "lucide-react";
-import type { CatalogItem } from "../../services/types/api";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { currencyFormat } from "@/utils";
+import type { CatalogItem } from "@/services/types/catalog";
 
 interface ProductCardProps {
   product: CatalogItem;
@@ -10,7 +10,6 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
-  const { catalog } = product;
   const [quantity, setQuantity] = useState(1);
 
   return (
@@ -23,13 +22,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
       {/* Image Container - Square Widget Style */}
       <div className="relative aspect-square rounded-[1.5rem] overflow-hidden bg-base-100">
         <img
-          src={catalog.image || "https://placehold.co/400x400?text=SukaBread"}
-          alt={catalog.name}
+          src={"https://placehold.co/400x400?text=no-image"}
+          alt={product?.name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
 
         {/* Bundle Badge - Top Left */}
-        {catalog.is_bundle === 1 && (
+        {product.is_bundle && (
           <div className="absolute top-2 left-2 z-10">
             <div className="bg-primary/90 px-2 py-1 rounded-lg flex items-center gap-1 shadow-lg">
               <div className="w-1 h-1 rounded-full bg-white animate-pulse" />
@@ -47,27 +46,27 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
       {/* Info Section */}
       <div className="flex flex-col px-1 flex-1">
         <h3 className="text-[14px] font-black text-base-content leading-tight uppercase tracking-tight line-clamp-2">
-          {catalog.name}
+          {product?.name}
         </h3>
 
-        {catalog.description && (
+        {/* {product?.description && (
           <p className="text-[11px] font-medium text-base-content/50 mt-1.5 line-clamp-2 leading-relaxed h-[2.8em]">
-            {catalog.description}
+            {product?.description}
           </p>
-        )}
+        )} */}
 
         <div className="mt-2">
           <span className="text-base font-black text-primary italic leading-none">
-            {currencyFormat(catalog.unit_price)}
+            {currencyFormat(product?.unit_price)}
           </span>
         </div>
 
         <div className="flex items-center justify-between mt-2">
           <span className="text-[10px] font-bold text-base-content/20 uppercase tracking-widest truncate max-w-[60%]">
-            {catalog.code}
+            {product?.code}
           </span>
           <span className="text-[10px] font-black text-primary/30">
-            {(catalog.weight / 1000).toFixed(1)}kg
+            {(product?.weight / 1000).toFixed(1)}kg
           </span>
         </div>
 

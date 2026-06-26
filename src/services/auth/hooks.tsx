@@ -1,91 +1,53 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from "react-redux";
-import { useEnigmaUI } from "@/components";
-import {
-  useSigninMutation,
-  useSeamlessMutation,
-  useLazyGetMeQuery,
-  useUpdateMeMutation,
-} from "./api";
-import { $signout } from "./slice";
+import { useSigninMutation, useSeamlessMutation } from "./api";
+import { logout, setCredentials } from "./slice";
 import { useFormActions } from "../form/hooks";
 import type { RootState } from "../store";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
-  const { user, outlet, franchise, authenticated } = useSelector(
+  const { authenticated, session } = useSelector(
     (state: RootState) => state.auth,
   );
-  const { showToast } = useEnigmaUI();
   const { failureWithTimeout } = useFormActions();
 
   const [signinMutation, signinResult] = useSigninMutation();
   const [seamlessMutation, seamlessResult] = useSeamlessMutation();
-  const [updateMeMutation, updateMeResult] = useUpdateMeMutation();
-  const [triggerGetMe, getMeResult] = useLazyGetMeQuery();
 
   const doSignin = async (credentials: any) => {
     try {
-      const result = await signinMutation(credentials).unwrap();
-      showToast({
-        message: "Logged in successfully!",
-        type: "success",
-      });
-      return result;
-    } catch (err: any) {
+      const res = await signinMutation(credentials).unwrap();
+      if (res?.message === "success") {
+        dispatch(setCredentials(res.data));
+      }
+    } catch (err) {
       failureWithTimeout(err);
     }
   };
 
   const doSeamless = async (data: any) => {
     try {
-      return await seamlessMutation(data).unwrap();
+      const res = await seamlessMutation(data).unwrap();
+      if (res?.message === "success") {
+        dispatch(setCredentials(res.data));
+      }
     } catch (err) {
-      failureWithTimeout(err);
-    }
-  };
-
-  const doGetMe = async () => {
-    try {
-      return await triggerGetMe().unwrap();
-    } catch (err) {
-      failureWithTimeout(err);
-    }
-  };
-
-  const doUpdateMe = async (data: any) => {
-    try {
-      const result = await updateMeMutation(data).unwrap();
-      showToast({
-        message: "Profile updated successfully!",
-        type: "success",
-      });
-      return result;
-    } catch (err: any) {
       failureWithTimeout(err);
     }
   };
 
   const doLogout = () => {
-    dispatch($signout());
-    showToast({
-      message: "Logged out",
-      type: "info",
-    });
+    dispatch(logout());
   };
 
   return {
-    user,
-    outlet,
-    franchise,
+    session,
     authenticated,
     doSignin,
     signinResult,
     doSeamless,
     seamlessResult,
-    doGetMe,
-    getMeResult,
-    doUpdateMe,
-    updateMeResult,
     doLogout,
   };
 };
