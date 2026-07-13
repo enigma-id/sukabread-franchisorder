@@ -14,9 +14,9 @@ const CatalogScreen = () => {
     search: "",
   });
 
-  const { query } = useCatalog(params);
+  const { listQuery } = useCatalog({ params });
   const { addItem } = useCart();
-  const { data: catalogResponse, isLoading, isFetching } = query;
+  const { data: catalogResponse, isLoading, isFetching } = listQuery;
 
   const handleAddToCart = (product: CatalogItem, quantity: number) => {
     addItem(product, quantity);

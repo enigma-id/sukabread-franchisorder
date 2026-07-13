@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams, useNavigate } from "react-router-dom";
-import { useOrderDetail } from "../services/order/hooks";
+import { useOrder } from "../services/order/hooks";
+import { normalizeOrderStatus } from "../utils/order-status";
 import {
   ArrowLeft,
   XCircle,
@@ -14,12 +16,18 @@ import {
   Copy,
   ExternalLink,
   MessageSquare,
+  MapPin,
+  User,
+  FileText,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEnigmaUI, Modal, Input } from "../components";
 import SectionTitle from "../components/app/SectionTitle";
 import { useState, useEffect } from "react";
 import { currencyFormat, dateFormat } from "../utils";
+import type { SalesOrderItem } from "../services/types/api";
+
+const isNonZeroDate = (d?: string) => d && !d.startsWith("0001-01-01");
 
 const CancelOrderModal = ({ onConfirm, onClose, isPending }: any) => {
   const [reason, setReason] = useState("");
@@ -65,10 +73,10 @@ const OrderDetailScreen = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { openModal, closeModal } = useEnigmaUI();
-  const { query, doCancelOrder, cancelOrderResult } = useOrderDetail(
-    id as string,
-  );
-  const { data: order, isLoading, error } = query;
+  const { detailQuery, doCancelOrder, cancelOrderResult } = useOrder({
+    id: id as string,
+  });
+  const { data: order, isLoading, error } = detailQuery;
   const isCanceling = cancelOrderResult.isLoading;
   const { showToast } = useEnigmaUI();
 
@@ -76,7 +84,7 @@ const OrderDetailScreen = () => {
 
   useEffect(() => {
     const expiryDate = order?.payment_expired_at;
-    if (expiryDate) {
+    if (expiryDate && isNonZeroDate(expiryDate)) {
       const timer = setInterval(() => {
         const difference = +new Date(expiryDate) - +new Date();
         if (difference > 0) {
@@ -149,6 +157,21 @@ const OrderDetailScreen = () => {
     );
   }
 
+  const displayStatus = normalizeOrderStatus(
+    order.document_status,
+    order.payment_status,
+  );
+  const isPaymentGateway =
+    order.payment_method?.provider === "qris" ||
+    order.payment_method?.provider === "midtrans";
+  const hasPaymentMethodAssigned =
+    order.payment_method_id &&
+    order.payment_method_id !== "00000000-0000-0000-0000-000000000000";
+  const hasPaymentInfo =
+    hasPaymentMethodAssigned ||
+    order.payment?.redirect_url ||
+    isNonZeroDate(order.payment_expired_at);
+
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case "finished":
@@ -213,9 +236,9 @@ const OrderDetailScreen = () => {
                 </span>
               </div>
               <div
-                className={`px-4 py-2 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-sm ${getStatusColor(order.order_status)}`}
+                className={`px-4 py-2 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-sm ${getStatusColor(displayStatus)}`}
               >
-                {order.order_status}
+                {displayStatus}
               </div>
             </div>
           </div>
@@ -230,7 +253,7 @@ const OrderDetailScreen = () => {
                   Ordered on
                 </span>
                 <span className="text-xs font-black text-base-content block">
-                  {dateFormat(order.ordered_at, "DD MMM YYYY")}
+                  {dateFormat(order.created_at, "DD MMM YYYY")}
                 </span>
               </div>
             </div>
@@ -243,7 +266,7 @@ const OrderDetailScreen = () => {
                   At time
                 </span>
                 <span className="text-xs font-black text-base-content block">
-                  {dateFormat(order.ordered_at, "HH:mm")}
+                  {dateFormat(order.created_at, "HH:mm")}
                 </span>
               </div>
             </div>
@@ -251,7 +274,7 @@ const OrderDetailScreen = () => {
         </motion.div>
 
         {/* Payment Info Section */}
-        {(order.bank || order.payment_url || order.payment_expired_at) && (
+        {hasPaymentInfo && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -261,7 +284,6 @@ const OrderDetailScreen = () => {
             {/* Expiry Countdown */}
             {timeLeft && (
               <div className="relative overflow-hidden bg-primary rounded-2xl mb-6 p-4 shadow-xl shadow-primary/20">
-                {/* Decorative Pattern */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none pattern-dots" />
 
                 <div className="relative z-10 flex items-center justify-between">
@@ -325,7 +347,7 @@ const OrderDetailScreen = () => {
                     Payment Method
                   </h3>
                   <p className="text-sm font-black text-base-content uppercase">
-                    {order.bank?.name || "Digital Payment"}
+                    {order.payment_method?.name || "Digital Payment"}
                   </p>
                 </div>
               </div>
@@ -340,22 +362,22 @@ const OrderDetailScreen = () => {
               {/* Account Number */}
               <button
                 onClick={() => {
-                  if (order.is_payment_gateway === 0) {
+                  if (!isPaymentGateway) {
                     handleCopy(
-                      order.bank?.account_number || "",
+                      order.payment_method?.account_number || "",
                       "Account Number",
                     );
                   }
                 }}
-                className={`group flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 transition-all text-left ${order.is_payment_gateway === 0 ? "hover:border-primary/30" : "cursor-default"}`}
+                className={`group flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 transition-all text-left ${!isPaymentGateway ? "hover:border-primary/30" : "cursor-default"}`}
               >
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-[10px] font-bold text-base-content/40 uppercase">
-                    {order.is_payment_gateway === 0
+                    {!isPaymentGateway
                       ? "Account Number"
                       : "Payment Method Type"}
                   </span>
-                  {order.is_payment_gateway === 0 && (
+                  {!isPaymentGateway && (
                     <Copy
                       size={12}
                       className="text-primary opacity-0 group-hover:opacity-100 transition-all"
@@ -363,10 +385,10 @@ const OrderDetailScreen = () => {
                   )}
                 </div>
                 <span
-                  className={`text-sm font-black font-mono tracking-wider ${order.is_payment_gateway === 0 ? "text-primary" : "text-base-content"}`}
+                  className={`text-sm font-black font-mono tracking-wider ${!isPaymentGateway ? "text-primary" : "text-base-content"}`}
                 >
-                  {order.is_payment_gateway === 0
-                    ? order.bank?.account_number || "-"
+                  {!isPaymentGateway
+                    ? order.payment_method?.account_number || "-"
                     : "Digital Payment Gateway"}
                 </span>
               </button>
@@ -377,14 +399,14 @@ const OrderDetailScreen = () => {
                   Account Name
                 </span>
                 <span className="text-sm font-black text-base-content uppercase">
-                  {order.bank?.account_name}
+                  {order.payment_method?.account_name}
                 </span>
               </div>
 
               {/* Total Bill to Copy */}
               <button
                 onClick={() =>
-                  handleCopy(order.total_bill.toString(), "Total Bill")
+                  handleCopy(order.total_charges.toString(), "Total Bill")
                 }
                 className="group flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 hover:border-primary/30 transition-all text-left"
               >
@@ -398,13 +420,13 @@ const OrderDetailScreen = () => {
                   />
                 </div>
                 <span className="text-lg font-black text-base-content">
-                  {currencyFormat(order.total_bill, true, "Rp", "0")}
+                  {currencyFormat(order.total_charges, true, "Rp", "0")}
                 </span>
               </button>
 
               {/* Action Buttons */}
               <div className="mt-4">
-                {order.is_payment_gateway === 0 ? (
+                {!isPaymentGateway ? (
                   <a
                     href={`https://wa.me/628123456789?text=Hi, I would like to confirm my payment for order ${order.code}`}
                     target="_blank"
@@ -417,7 +439,7 @@ const OrderDetailScreen = () => {
                   <div className="flex flex-col gap-3">
                     <button
                       onClick={() =>
-                        window.open(order.payment_url || "", "_blank")
+                        window.open(order.payment?.redirect_url || "", "_blank")
                       }
                       className="w-full h-14 bg-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
                     >
@@ -425,7 +447,10 @@ const OrderDetailScreen = () => {
                     </button>
                     <button
                       onClick={() =>
-                        handleCopy(order.payment_url || "", "Payment Link")
+                        handleCopy(
+                          order.payment?.redirect_url || "",
+                          "Payment Link",
+                        )
                       }
                       className="flex items-center justify-center gap-2 text-[9px] font-black text-primary uppercase tracking-widest hover:opacity-70 transition-all"
                     >
@@ -455,14 +480,21 @@ const OrderDetailScreen = () => {
                   Logistics Detail
                 </h3>
                 <p className="text-sm font-black text-base-content uppercase">
-                  {order.expedisi || "Standard Shipping"}
+                  {order.warehouse_name || "Standard Shipping"}
                 </p>
               </div>
             </div>
-            <div
-              className={`px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-widest ${getStatusColor(order.delivery_status)}`}
-            >
-              {order.delivery_status}
+            <div className="flex items-center gap-2">
+              {order.self_pickup && (
+                <span className="px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-widest text-amber-500 bg-amber-50">
+                  Self Pickup
+                </span>
+              )}
+              <div
+                className={`px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-widest ${getStatusColor(order.fulfillment_status)}`}
+              >
+                {order.fulfillment_status}
+              </div>
             </div>
           </div>
           <div className="bg-base-100 rounded-2xl p-4 border border-base-200">
@@ -471,7 +503,7 @@ const OrderDetailScreen = () => {
                 Expedition
               </span>
               <span className="text-xs font-black text-base-content">
-                {order.expedisi}
+                {order.warehouse_name || "Standard Shipping"}
               </span>
             </div>
             <div className="flex justify-between items-center">
@@ -479,7 +511,7 @@ const OrderDetailScreen = () => {
                 Est. Shipping Date
               </span>
               <span className="text-xs font-black text-base-content">
-                {order.shipping_date
+                {order.shipping_date && isNonZeroDate(order.shipping_date)
                   ? dateFormat(order.shipping_date, "DD MMMM YYYY")
                   : "To be determined"}
               </span>
@@ -487,15 +519,93 @@ const OrderDetailScreen = () => {
           </div>
         </motion.div>
 
+        {/* Recipient Info Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.18 }}
+          className="bg-white rounded-[2rem] p-6 border border-base-200 premium-shadow mb-8"
+        >
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+              <User size={18} />
+            </div>
+            <div>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-base-content/40">
+                Recipient
+              </h3>
+              <p className="text-sm font-black text-base-content uppercase">
+                {order.recipient_name}
+              </p>
+            </div>
+          </div>
+          <div className="bg-base-100 rounded-2xl p-4 border border-base-200 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] font-bold text-base-content/40 uppercase">Phone</span>
+              <span className="text-xs font-black text-base-content">{order.recipient_phone}</span>
+            </div>
+            <div className="h-px bg-base-200" />
+            <div className="flex items-start gap-3">
+              <MapPin size={14} className="text-base-content/30 mt-0.5 shrink-0" />
+              <span className="text-xs font-bold text-base-content/70">{order.recipient_address}</span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Notes Section */}
+        {(order.note || order.void_note || order.ref_code) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white rounded-[2rem] p-6 border border-base-200 premium-shadow mb-8"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gray-500/10 flex items-center justify-center text-gray-500">
+                <FileText size={18} />
+              </div>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-base-content/40">
+                Additional Info
+              </h3>
+            </div>
+            <div className="bg-base-100 rounded-2xl p-4 border border-base-200 space-y-3">
+              {order.ref_code && (
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-base-content/40 uppercase">Ref Code</span>
+                  <span className="text-xs font-black text-base-content font-mono">{order.ref_code}</span>
+                </div>
+              )}
+              {order.note && (
+                <>
+                  <div className="h-px bg-base-200" />
+                  <div>
+                    <span className="text-[10px] font-bold text-base-content/40 uppercase block mb-1">Note</span>
+                    <span className="text-xs font-bold text-base-content/70">{order.note}</span>
+                  </div>
+                </>
+              )}
+              {order.void_note && order.document_status === "cancelled" && (
+                <>
+                  <div className="h-px bg-base-200" />
+                  <div>
+                    <span className="text-[10px] font-bold text-red-400 uppercase block mb-1">Void Reason</span>
+                    <span className="text-xs font-bold text-base-content/70">{order.void_note}</span>
+                  </div>
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+
         <SectionTitle
           title="ORDER SUMMARY"
-          subtitle={`${order.items.length} items purchased`}
+          subtitle={`${order.items?.length || 0} items purchased`}
         />
 
         <div className="flex flex-col gap-3 mb-10">
-          {order.items.map((item: any, idx: number) => {
+          {(order.items || []).map((item: SalesOrderItem, idx: number) => {
             const itemName = item?.catalog?.name || `-- ${item?.item?.name}`;
-            const isBundleItem = item.bundle_id > 0;
+            const isBundleItem = (item.bundle_id ?? 0) > 0;
 
             return (
               <motion.div
@@ -517,6 +627,11 @@ const OrderDetailScreen = () => {
                       <span className="text-[10px] font-bold text-base-content/50 uppercase">
                         {item.quantity_ordered} × @{" "}
                         {currencyFormat(item.unit_nett)}
+                        {item.fraction?.name && (
+                          <span className="ml-1 text-base-content/30">
+                            /{item.fraction.name}
+                          </span>
+                        )}
                       </span>
                     )}
                   </div>
@@ -531,6 +646,11 @@ const OrderDetailScreen = () => {
                         "0",
                       )}
                     </span>
+                    {item.quantity_fulfilled > 0 && (
+                      <span className="text-[9px] font-bold text-green-500 uppercase mt-0.5">
+                        {item.quantity_fulfilled} fulfilled
+                      </span>
+                    )}
                   </div>
                 )}
               </motion.div>
@@ -570,11 +690,11 @@ const OrderDetailScreen = () => {
                 Total Bill
               </span>
               <span className="text-xl font-black text-primary">
-                {currencyFormat(order.total_bill, true, "Rp", "0")}
+                {currencyFormat(order.total_charges, true, "Rp", "0")}
               </span>
             </div>
 
-            {(order?.id || 0) !== 0 && order.order_status === "pending" && (
+            {displayStatus === "pending" && (
               <button
                 onClick={handleCancelOrder}
                 disabled={isCanceling}

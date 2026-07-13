@@ -13,7 +13,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import SectionTitle from "../components/app/SectionTitle";
 import { currencyFormat } from "@/utils";
-import { Checkbox, Input, RemoteSelect, useEnigmaUI } from "@/components";
+import { Checkbox, Input, RemoteSelect } from "@/components";
 import { useCart } from "../services/cart/hooks";
 import StickyHeader from "@/components/app/StickyHeader";
 import type { PaymentMethod } from "@/services/types/payment";
@@ -60,28 +60,7 @@ const CheckoutScreen = () => {
     self_pickup: false,
   });
 
-  // const { data: paymentMethodsData } = paymentMethodsQuery;
-  // const { data: warehouseData } = warehouseQuery;
-
-  // const paymentMethods = (
-  //   Array.isArray(paymentMethodsData)
-  //     ? paymentMethodsData
-  //     : (paymentMethodsData as any)?.data || []
-  // ) as PaymentMethod[];
-
-  // const warehouses = (
-  //   Array.isArray(warehouseData)
-  //     ? warehouseData
-  //     : (warehouseData as any)?.data || []
-  // ) as Warehouse[];
-
   const isCheckingOut = checkoutResult.isLoading;
-
-  // const selectedPaymentMethod = paymentMethods.find(
-  //   (pm) => pm.id === paymentMethod,
-  // );
-
-  // const requiresPhone = selectedPaymentMethod?.is_member_payment;
 
   const handleCheckout = async () => {
     try {
@@ -253,7 +232,17 @@ const CheckoutScreen = () => {
                   <RemoteSelect<PaymentMethod>
                     hook={paymentResult as any}
                     fetchData={(page, search) => getPayment({ page, search })}
-                    getLabel={(item: any) => item?.name}
+                    getLabel={(item: any) =>
+                      `${item?.name} - ${item?.provider}`
+                    }
+                    renderItem={(item: any) => (
+                      <div className="flex flex-col">
+                        <span>{item?.name}</span>
+                        <span className="text-xs text-gray-500 ">
+                          {item?.provider}
+                        </span>
+                      </div>
+                    )}
                     value={paymentMethod}
                     onChange={(item: PaymentMethod) => {
                       setPaymentMethod(item);

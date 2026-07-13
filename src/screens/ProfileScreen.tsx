@@ -1,5 +1,6 @@
 import { useAuth } from "../services/auth/hooks";
-import { LogOut, Shield, UserCircle2 } from "lucide-react";
+import { useProfile } from "../services/profile/hooks";
+import { LogOut, Shield, UserCircle2, Store, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEnigmaUI, Modal } from "../components";
 import SectionTitle from "../components/app/SectionTitle";
@@ -7,6 +8,7 @@ import StickyHeader from "../components/app/StickyHeader";
 
 const ProfileScreen = () => {
   const { doLogout, session } = useAuth();
+  const { query: { data: profile } = { data: undefined } } = useProfile();
   const { openModal, closeModal } = useEnigmaUI();
 
   const handleLogout = () => {
@@ -53,6 +55,8 @@ const ProfileScreen = () => {
     });
   };
 
+  const outlet = profile?.outlet;
+
   if (!session?.user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-base-100">
@@ -75,7 +79,6 @@ const ProfileScreen = () => {
           animate={{ opacity: 1, y: 0 }}
           className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-primary-focus rounded-[3rem] p-8 shadow-2xl mb-10 group"
         >
-          {/* Decorative Elements */}
           <div className="absolute inset-0 pattern-dots opacity-20 pointer-events-none" />
           <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/10 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-700" />
           <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-black/10 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-700" />
@@ -113,7 +116,6 @@ const ProfileScreen = () => {
         </motion.div>
 
         <div className="space-y-10">
-          {/* Info Sections */}
           <div className="grid grid-cols-1 gap-8">
             {/* Account Details */}
             <section>
@@ -138,7 +140,8 @@ const ProfileScreen = () => {
               </div>
             </section>
 
-            {/* <section>
+            {/* Outlet Info - from live API */}
+            <section>
               <SectionTitle title="OUTLET INFO" subtitle="Store Location" />
               <div className="bg-white rounded-[2.5rem] p-6 border border-base-200 shadow-sm space-y-5">
                 <div className="flex items-center gap-4">
@@ -174,7 +177,7 @@ const ProfileScreen = () => {
                   </div>
                 </div>
               </div>
-            </section> */}
+            </section>
           </div>
 
           {/* Logout Button */}
@@ -185,20 +188,6 @@ const ProfileScreen = () => {
             <LogOut size={20} />
             Sign Out
           </button>
-
-          {/* <div className="text-center pb-12">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="h-px w-8 bg-base-content/10" />
-              <div className="w-1.5 h-1.5 rounded-full bg-primary/20" />
-              <div className="h-px w-8 bg-base-content/10" />
-            </div>
-            <p className="text-[9px] font-black tracking-[0.4em] text-base-content/20 uppercase">
-              SukaBread Mobile <br />{" "}
-              <span className="text-primary/40 italic">
-                Premium Edition v2.1.0
-              </span>
-            </p>
-          </div> */}
         </div>
       </div>
     </div>

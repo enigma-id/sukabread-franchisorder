@@ -1,19 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetCatalogQuery, useShowCatalogQuery } from "./api";
 
-export const useCatalog = (params?: any) => {
-  const query = useGetCatalogQuery(params);
+export const useCatalog = ({ id, params }: { id?: string; params?: any } = {}) => {
+  const listQuery = useGetCatalogQuery(params);
+  const detailQuery = useShowCatalogQuery(id!, { skip: !id });
 
   return {
-    query,
-    // Add any specific catalog actions here if needed in the future
-  };
-};
-
-export const useCatalogDetail = (id: string) => {
-  const query = useShowCatalogQuery(id);
-
-  return {
-    query,
+    listQuery,
+    detailQuery,
   };
 };

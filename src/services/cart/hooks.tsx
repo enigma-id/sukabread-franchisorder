@@ -91,23 +91,9 @@ export const useCart = () => {
     }
   };
 
-  // const doFetchSchedule = async () => {
-  //   try {
-  //     const cartItems = items.map((i) => ({
-  //       catalog_id: i.catalog.id,
-  //       quantity: i.quantity,
-  //     }));
-  //     return await getScheduleMutation({ items: cartItems }).unwrap();
-  //   } catch (err) {
-  //     failureWithTimeout(err);
-  //     // We don't toast here as it's often called automatically
-  //   }
-  // };
-
   return {
     // Actions
     doCheckout,
-    // doFetchSchedule,
     addItem,
     removeItem,
     updateQuantity,

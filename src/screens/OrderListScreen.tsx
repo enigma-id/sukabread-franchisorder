@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOrder } from "../services/order/hooks";
+import { normalizeOrderStatus, mapStatusToBackend } from "../utils/order-status";
 import {
   ChevronLeft,
   ChevronRight,
@@ -17,17 +18,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import StickyHeader from "../components/app/StickyHeader";
 import SectionTitle from "../components/app/SectionTitle";
 import { currencyFormat, dateFormat } from "@/utils";
+import type { Order } from "../services/types/api";
 
 const OrderListScreen = () => {
   const [params, setParams] = useState({
     page: 1,
     limit: 10,
     status: "",
-    order_by: "-id",
+    order_by: "-sales_order:created_at" as string,
   });
 
-  const { query } = useOrder(params);
-  const { data, isLoading, isFetching } = query;
+  const apiParams = {
+    ...params,
+    document_status: mapStatusToBackend(params.status),
+    status: undefined,
+  };
+  const { listQuery } = useOrder({ params: apiParams as unknown as Record<string, unknown> });
+  const { data, isLoading, isFetching } = listQuery;
   const navigate = useNavigate();
 
   const handlePageChange = (newPage: number) => {
@@ -148,8 +155,9 @@ const OrderListScreen = () => {
               </motion.div>
             )}
 
-            {orders.map((order: any, index) => {
-              const theme = getStatusTheme(order.order_status);
+            {orders.map((order: Order, index) => {
+              const displayStatus = normalizeOrderStatus(order.document_status, order.payment_status);
+              const theme = getStatusTheme(displayStatus);
               const statusColor = `bg-${theme.color}-500`;
               const bgColor = `bg-${theme.color}-100`;
               const iconColor = `text-${theme.color}-500`;
@@ -187,10 +195,10 @@ const OrderListScreen = () => {
                         </span>
                       </span>
                       <span className="text-lg font-black text-base-content tracking-tight mt-0.5">
-                        {currencyFormat(order.total_bill)}
+                        {currencyFormat(order.total_charges)}
                       </span>
                       <span className="text-[9px] font-bold text-base-content/50 mt-1 uppercase">
-                        {dateFormat(order.ordered_at, "DD MMM YYYY HH:mm")}
+                        {dateFormat(order.created_at, "DD MMM YYYY HH:mm")}
                       </span>
                     </div>
                   </div>
@@ -200,7 +208,7 @@ const OrderListScreen = () => {
                       <span
                         className={`text-[10px] font-black uppercase tracking-widest ${iconColor}`}
                       >
-                        {order.order_status}
+                        {displayStatus}
                       </span>
                       <div className="w-10 h-1 bg-base-200 rounded-full mt-1 overflow-hidden">
                         <div
@@ -252,11 +260,11 @@ const OrderListScreen = () => {
         </div>
 
         {/* Pagination */}
-        {meta && meta.last_page > 1 && (
+        {meta && meta.total_pages > 1 && (
           <div className="flex items-center justify-between mt-12 bg-white/60 p-2 rounded-2xl">
             <button
-              onClick={() => handlePageChange(meta.current_page - 1)}
-              disabled={meta.current_page === 1}
+              onClick={() => handlePageChange(meta.page - 1)}
+              disabled={meta.page === 1}
               className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-base-content/40 disabled:opacity-30 active:scale-95 transition-all"
             >
               <ChevronLeft size={20} />
@@ -268,20 +276,20 @@ const OrderListScreen = () => {
               </span>
               <div className="flex items-center gap-1">
                 <span className="text-sm font-black text-primary">
-                  {meta.current_page}
+                  {meta.page}
                 </span>
                 <span className="text-sm font-black text-base-content/30">
                   /
                 </span>
                 <span className="text-sm font-black text-base-content/50">
-                  {meta.last_page}
+                  {meta.total_pages}
                 </span>
               </div>
             </div>
 
             <button
-              onClick={() => handlePageChange(meta.current_page + 1)}
-              disabled={meta.current_page === meta.last_page}
+              onClick={() => handlePageChange(meta.page + 1)}
+              disabled={meta.page === meta.total_pages}
               className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-base-content/40 disabled:opacity-30 active:scale-95 transition-all"
             >
               <ChevronRight size={20} />
