@@ -161,6 +161,7 @@ const OrderDetailScreen = () => {
     order.payment_status,
   );
   const hasPaymentInfo =
+    order.document_status !== "cancelled" &&
     order.payment_method_id &&
     order.payment_method_id !== "00000000-0000-0000-0000-000000000000";
 
