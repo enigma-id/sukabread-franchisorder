@@ -164,13 +164,9 @@ const OrderDetailScreen = () => {
   const isPaymentGateway =
     order.payment_method?.provider === "qris" ||
     order.payment_method?.provider === "midtrans";
-  const hasPaymentMethodAssigned =
+  const hasPaymentInfo =
     order.payment_method_id &&
     order.payment_method_id !== "00000000-0000-0000-0000-000000000000";
-  const hasPaymentInfo =
-    hasPaymentMethodAssigned ||
-    order.payment?.redirect_url ||
-    isNonZeroDate(order.payment_expired_at);
 
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -359,51 +355,140 @@ const OrderDetailScreen = () => {
             </div>
 
             <div className="flex flex-col gap-3">
-              {/* Account Number */}
-              <button
-                onClick={() => {
-                  if (!isPaymentGateway) {
-                    handleCopy(
-                      order.payment_method?.account_number || "",
-                      "Account Number",
-                    );
-                  }
-                }}
-                className={`group flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 transition-all text-left ${!isPaymentGateway ? "hover:border-primary/30" : "cursor-default"}`}
-              >
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-[10px] font-bold text-base-content/40 uppercase">
-                    {!isPaymentGateway
-                      ? "Account Number"
-                      : "Payment Method Type"}
-                  </span>
-                  {!isPaymentGateway && (
-                    <Copy
-                      size={12}
-                      className="text-primary opacity-0 group-hover:opacity-100 transition-all"
-                    />
+              {/* Account info berdasarkan tipe payment */}
+              {order.payment_method?.provider === "qris" ? (
+                <>
+                  {/* QRIS: tampilkan QR langsung */}
+                  <div className="flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 text-left">
+                    <span className="text-[10px] font-bold text-base-content/40 uppercase mb-1">
+                      Provider
+                    </span>
+                    <span className="text-sm font-black text-base-content uppercase">
+                      {order.payment_method?.provider}
+                    </span>
+                  </div>
+
+                  {order.payment_status !== "paid" && order.payment?.qr_url && (
+                    <div className="flex justify-center bg-white rounded-2xl p-6 border border-base-200">
+                      <img
+                        src={order.payment.qr_url}
+                        alt="QR Code"
+                        className="w-64 h-64 object-contain"
+                      />
+                    </div>
                   )}
-                </div>
-                <span
-                  className={`text-sm font-black font-mono tracking-wider ${!isPaymentGateway ? "text-primary" : "text-base-content"}`}
-                >
-                  {!isPaymentGateway
-                    ? order.payment_method?.account_number || "-"
-                    : "Digital Payment Gateway"}
-                </span>
-              </button>
 
-              {/* Account Name */}
-              <div className="flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 text-left">
-                <span className="text-[10px] font-bold text-base-content/40 uppercase mb-1">
-                  Account Name
-                </span>
-                <span className="text-sm font-black text-base-content uppercase">
-                  {order.payment_method?.account_name}
-                </span>
-              </div>
+                  {/* Copy Payment Link */}
+                  {order.payment_status !== "paid" && order.payment?.redirect_url && (
+                    <button
+                      onClick={() =>
+                        handleCopy(
+                          order.payment?.redirect_url || "",
+                          "Payment Link",
+                        )
+                      }
+                      className="flex items-center justify-center gap-2 text-[9px] font-black text-primary uppercase tracking-widest hover:opacity-70 transition-all"
+                    >
+                      <Copy size={12} /> Copy Payment Link
+                    </button>
+                  )}
+                </>
+              ) : order.payment_method?.provider === "midtrans" ? (
+                <>
+                  {/* Midtrans: va_number & bank_name */}
+                  <div className="group flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 transition-all text-left hover:border-primary/30">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[10px] font-bold text-base-content/40 uppercase">
+                        Virtual Account Number
+                      </span>
+                      {order.payment?.va_number && (
+                        <Copy
+                          size={12}
+                          className="text-primary opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                          onClick={() =>
+                            handleCopy(
+                              order.payment?.va_number || "",
+                              "VA Number",
+                            )
+                          }
+                        />
+                      )}
+                    </div>
+                    <span className="text-sm font-black font-mono tracking-wider text-primary">
+                      {order.payment?.va_number || "-"}
+                    </span>
+                  </div>
 
-              {/* Total Bill to Copy */}
+                  <div className="flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 text-left">
+                    <span className="text-[10px] font-bold text-base-content/40 uppercase mb-1">
+                      Bank
+                    </span>
+                    <span className="text-sm font-black text-base-content uppercase">
+                      {order.payment?.bank_name || "-"}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 text-left">
+                    <span className="text-[10px] font-bold text-base-content/40 uppercase mb-1">
+                      Provider
+                    </span>
+                    <span className="text-sm font-black text-base-content uppercase">
+                      {order.payment_method?.provider}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Manual Transfer: account_number */}
+                  <button
+                    onClick={() =>
+                      handleCopy(
+                        order.payment_method?.account_number || "",
+                        "Account Number",
+                      )
+                    }
+                    className="group flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 transition-all text-left hover:border-primary/30"
+                  >
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[10px] font-bold text-base-content/40 uppercase">
+                        Account Number
+                      </span>
+                      <Copy
+                        size={12}
+                        className="text-primary opacity-0 group-hover:opacity-100 transition-all"
+                      />
+                    </div>
+                    <span className="text-sm font-black font-mono tracking-wider text-primary">
+                      {order.payment_method?.account_number || "-"}
+                    </span>
+                  </button>
+
+                  <div className="flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 text-left">
+                    <span className="text-[10px] font-bold text-base-content/40 uppercase mb-1">
+                      Provider
+                    </span>
+                    <span className="text-sm font-black text-base-content uppercase">
+                      {order.payment_method?.provider}
+                    </span>
+                  </div>
+
+                  {/* Confirm WA */}
+                  {order.payment_status !== "paid" && (
+                  <div className="mt-2">
+                    <a
+                      href={`https://wa.me/${order.franchisor?.phone || "628123456789"}?text=Hi, I would like to confirm my payment for order ${order.code}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full h-14 bg-[#25D366] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-green-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+                    >
+                      <MessageSquare size={18} /> Confirm via WhatsApp
+                    </a>
+                  </div>
+                  )}
+                </>
+              )}
+
+              {/* Total Bill to Copy (for all types) */}
               <button
                 onClick={() =>
                   handleCopy(order.total_charges.toString(), "Total Bill")
@@ -423,42 +508,6 @@ const OrderDetailScreen = () => {
                   {currencyFormat(order.total_charges, true, "Rp", "0")}
                 </span>
               </button>
-
-              {/* Action Buttons */}
-              <div className="mt-4">
-                {!isPaymentGateway ? (
-                  <a
-                    href={`https://wa.me/628123456789?text=Hi, I would like to confirm my payment for order ${order.code}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full h-14 bg-[#25D366] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-green-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
-                  >
-                    <MessageSquare size={18} /> Confirm via WhatsApp
-                  </a>
-                ) : (
-                  <div className="flex flex-col gap-3">
-                    <button
-                      onClick={() =>
-                        window.open(order.payment?.redirect_url || "", "_blank")
-                      }
-                      className="w-full h-14 bg-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
-                    >
-                      <ExternalLink size={18} /> Open Payment Link
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleCopy(
-                          order.payment?.redirect_url || "",
-                          "Payment Link",
-                        )
-                      }
-                      className="flex items-center justify-center gap-2 text-[9px] font-black text-primary uppercase tracking-widest hover:opacity-70 transition-all"
-                    >
-                      <Copy size={12} /> Copy Payment Link
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
           </motion.div>
         )}

@@ -123,7 +123,10 @@ export interface PaymentMethod {
 export interface PaymentTransaction {
   redirect_url?: string;
   qr_code?: string;
+  qr_url?: string;
   status?: string;
+  va_number?: string;
+  bank_name?: string;
   [key: string]: unknown;
 }
 
@@ -143,6 +146,19 @@ export interface SalesOrderItem {
   bundle_id?: number;
   catalog?: { name: string };
   item?: { name: string };
+}
+
+export interface Franchisor {
+  id: string;
+  name: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  logo_url?: string;
+  is_active: boolean;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Order {
@@ -180,6 +196,7 @@ export interface Order {
   updated_by: string;
   created_at: string;
   updated_at: string;
+  franchisor?: Franchisor;
   outlet?: Record<string, unknown>;
   region?: Record<string, unknown>;
   payment_method?: PaymentMethod;
