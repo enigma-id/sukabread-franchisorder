@@ -45,12 +45,13 @@ const CheckoutScreen = () => {
     null,
   );
   const [warehouse, setWarehouse] = useState<Warehouse | null>(null);
-  const [shippingDate, setShippingDate] = useState<dayjs.Dayjs | null>(null);
+  const [shippingDate, setShippingDate] = useState<any>(dayjs());
   const [formData] = useState<SalesOrderFormData>({
     self_pickup: true,
   });
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  const isCheckingOut = checkoutResult.isLoading;
+  const isCheckingOut = checkoutResult.isLoading || isRedirecting;
 
   const handleCheckout = async () => {
     try {
@@ -63,6 +64,8 @@ const CheckoutScreen = () => {
       const result = await doCheckout(payload);
       const orderId = result?.data?.id || result?.id;
       if (orderId) {
+        setIsRedirecting(true);
+        await new Promise((r) => setTimeout(r, 1000));
         navigate(`/order/${orderId}`);
       }
     } catch (err: any) {
@@ -177,6 +180,19 @@ const CheckoutScreen = () => {
               />
 
               <div className='grid grid-cols-1 gap-4'>
+                {/* Shipping Date */}
+                <div className='bg-white rounded-3xl p-6 border border-base-200 premium-shadow'>
+                  <DatePicker
+                    label='Tanggal Pengiriman'
+                    required
+                    placeholder='Pilih tanggal'
+                    disablePast
+                    value={shippingDate}
+                    onChange={(date: any) => setShippingDate(date)}
+                    error={FormState?.errors?.shipping_date as string}
+                  />
+                </div>
+
                 {/* Warehouse */}
                 <div className='bg-white rounded-3xl p-6 border border-base-200 premium-shadow'>
                   <div className='flex items-center gap-3 mb-6'>
@@ -244,18 +260,6 @@ const CheckoutScreen = () => {
                   />
                 </div>
 
-                {/* Shipping Date */}
-                <div className='bg-white rounded-3xl p-6 border border-base-200 premium-shadow'>
-                  <DatePicker
-                    label='Tanggal Pengiriman'
-                    required
-                    placeholder='Pilih tanggal'
-                    disablePast
-                    value={shippingDate}
-                    onChange={(date) => setShippingDate(date as any)}
-                    error={FormState?.errors?.shipping_date as string}
-                  />
-                </div>
               </div>
             </section>
           </div>

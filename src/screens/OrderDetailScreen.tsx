@@ -14,7 +14,6 @@ import {
   Truck,
   Timer,
   Copy,
-  ExternalLink,
   MessageSquare,
   MapPin,
   User,
@@ -161,9 +160,6 @@ const OrderDetailScreen = () => {
     order.document_status,
     order.payment_status,
   );
-  const isPaymentGateway =
-    order.payment_method?.provider === "qris" ||
-    order.payment_method?.provider === "midtrans";
   const hasPaymentInfo =
     order.payment_method_id &&
     order.payment_method_id !== "00000000-0000-0000-0000-000000000000";

@@ -146,6 +146,7 @@ export interface SalesOrderItem {
   bundle_id?: number;
   catalog?: { name: string };
   item?: { name: string };
+  fraction?: { name: string };
 }
 
 export interface Franchisor {
