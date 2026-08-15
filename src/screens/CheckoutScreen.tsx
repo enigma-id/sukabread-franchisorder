@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Trash2,
@@ -36,6 +36,7 @@ const CheckoutScreen = () => {
     removeItem,
     getWarehouse,
     warehouseResult,
+    warehouseQuery,
     getPayment,
     paymentResult,
   } = useCart();
@@ -53,6 +54,16 @@ const CheckoutScreen = () => {
 
   const isCheckingOut = checkoutResult.isLoading || isRedirecting;
 
+  const warehouseList = (warehouseQuery?.data as any)?.data ?? [];
+  const isSingleWarehouse = warehouseList.length === 1;
+
+  // Auto-select warehouse when exactly one is available
+  useEffect(() => {
+    if (isSingleWarehouse) {
+      setWarehouse(warehouseList[0]);
+    }
+  }, [warehouseQuery?.data]);
+
   const handleCheckout = async () => {
     try {
       const payload = {
@@ -65,7 +76,6 @@ const CheckoutScreen = () => {
       const orderId = result?.data?.id || result?.id;
       if (orderId) {
         setIsRedirecting(true);
-        await new Promise((r) => setTimeout(r, 1000));
         navigate(`/order/${orderId}`);
       }
     } catch (err: any) {
@@ -183,7 +193,7 @@ const CheckoutScreen = () => {
                 {/* Shipping Date */}
                 <div className='bg-white rounded-3xl p-6 border border-base-200 premium-shadow'>
                   <DatePicker
-                    label='Tanggal Pengiriman'
+                    label='Tanggal Pengambilan'
                     required
                     placeholder='Pilih tanggal'
                     disablePast
@@ -214,12 +224,18 @@ const CheckoutScreen = () => {
                     fetchData={(page, search) => getWarehouse({ page, search })}
                     getLabel={(item: any) => item?.name}
                     value={warehouse}
+                    disabled={isSingleWarehouse}
                     onChange={(item: Warehouse) => {
                       setWarehouse(item);
                     }}
                     placeholder='Pilih pengambilan barang'
                     error={FormState?.errors?.warehouse_id as string}
                   />
+                  {isSingleWarehouse && (
+                    <p className='text-[10px] font-bold text-base-content/40 uppercase tracking-widest mt-2'>
+                      Otomatis terpilih
+                    </p>
+                  )}
                 </div>
                 {/* Payment Method */}
                 <div className='bg-white rounded-3xl p-6 border border-base-200 premium-shadow'>
@@ -240,9 +256,7 @@ const CheckoutScreen = () => {
                   <RemoteSelect<PaymentMethod>
                     hook={paymentResult as any}
                     fetchData={(page, search) => getPayment({ page, search })}
-                    getLabel={(item: any) =>
-                      `${item?.name} - ${item?.provider}`
-                    }
+                    getLabel={(item: any) => `${item?.name}`}
                     renderItem={(item: any) => (
                       <div className='flex flex-col'>
                         <span>{item?.name}</span>
@@ -259,7 +273,6 @@ const CheckoutScreen = () => {
                     error={FormState?.errors?.payment_method_id as string}
                   />
                 </div>
-
               </div>
             </section>
           </div>

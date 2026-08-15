@@ -7,7 +7,6 @@ import {
   useLazyGetPaymentMethodsQuery,
   useGetWarehouseQuery,
   useLazyGetWarehouseQuery,
-  useLazyGetRegionQuery,
 } from "./api";
 import { $clearCart, $addItem, $removeItem, $updateQuantity } from "./slice";
 import type { RootState } from "../store";
@@ -21,7 +20,6 @@ export const useCart = () => {
   const [checkoutMutation, checkoutResult] = useCheckoutMutation();
   const [triggerPayment, paymentResult] = useLazyGetPaymentMethodsQuery();
   const [triggerWarehouse, warehouseResult] = useLazyGetWarehouseQuery();
-  const [triggerRegion, regionResult] = useLazyGetRegionQuery();
   const { failureWithTimeout } = useFormActions();
 
   // Use query hook directly for payment methods as it's typically auto-fetched
@@ -83,14 +81,6 @@ export const useCart = () => {
     }
   };
 
-  const getRegion = async (params: any) => {
-    try {
-      await triggerRegion(params).unwrap();
-    } catch (err) {
-      failureWithTimeout(err);
-    }
-  };
-
   return {
     // Actions
     doCheckout,
@@ -100,13 +90,11 @@ export const useCart = () => {
     clearCart,
     getWarehouse,
     getPayment,
-    getRegion,
 
     // Results/States
     checkoutResult,
     paymentResult,
     warehouseResult,
-    regionResult,
     paymentMethodsQuery,
     warehouseQuery,
 

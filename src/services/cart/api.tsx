@@ -26,13 +26,6 @@ export const cartApi = createApi({
         params,
       }),
     }),
-    getRegion: builder.query({
-      query: (params) => ({
-        url: "/regions/search",
-        method: "GET",
-        params,
-      }),
-    }),
   }),
 });
 
@@ -42,5 +35,4 @@ export const {
   useLazyGetPaymentMethodsQuery,
   useGetWarehouseQuery,
   useLazyGetWarehouseQuery,
-  useLazyGetRegionQuery,
 } = cartApi;

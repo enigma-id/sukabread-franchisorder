@@ -78,7 +78,7 @@ const Dropdown: DropdownComponent = ({
       {open && !disabled && (
         <ul
           className={clsx(
-            "dropdown-content menu rounded-box bg-base-100 z-20 w-auto p-2 shadow-md",
+            "dropdown-content menu rounded-box bg-base-100 z-[60] w-auto p-2 shadow-md",
             contentClassName
           )}
         >
