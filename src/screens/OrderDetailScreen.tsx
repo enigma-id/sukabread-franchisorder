@@ -400,16 +400,18 @@ const OrderDetailScreen = () => {
                         Virtual Account Number
                       </span>
                       {order.payment?.va_number && (
-                        <Copy
-                          size={12}
-                          className='text-primary opacity-0 group-hover:opacity-100 transition-all cursor-pointer'
+                        <button
                           onClick={() =>
                             handleCopy(
                               order.payment?.va_number || "",
                               "VA Number",
                             )
                           }
-                        />
+                          className='w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary active:scale-90 transition-all'
+                          aria-label='Copy VA Number'
+                        >
+                          <Copy size={12} />
+                        </button>
                       )}
                     </div>
                     <span className='text-sm font-black font-mono tracking-wider text-primary'>
