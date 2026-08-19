@@ -18,6 +18,7 @@ export interface ProfileUser {
     address?: string;
     city?: string;
     province?: string;
+    saldo?: number;
   };
   region?: Record<string, unknown>;
 }

@@ -19,6 +19,7 @@ import StickyHeader from "@/components/app/StickyHeader";
 import type { PaymentMethod } from "@/services/types/payment";
 import type { Warehouse } from "@/services/types/warehouse";
 import { useAppSelector } from "@/hooks";
+import { useProfile } from "@/services/profile/hooks";
 
 type SalesOrderFormData = {
   self_pickup: boolean;
@@ -26,6 +27,7 @@ type SalesOrderFormData = {
 
 const CheckoutScreen = () => {
   const FormState = useAppSelector((s) => s.form);
+  const { query: { data: profile } = { data: undefined } } = useProfile();
 
   const {
     doCheckout,
@@ -272,6 +274,12 @@ const CheckoutScreen = () => {
                     placeholder='Pilih method'
                     error={FormState?.errors?.payment_method_id as string}
                   />
+
+                  {paymentMethod?.provider === "saldo" && (
+                    <p className='text-[10px] font-bold text-base-content/40 uppercase tracking-widest mt-2'>
+                      Saldo Anda: {currencyFormat(profile?.outlet?.saldo)}
+                    </p>
+                  )}
                 </div>
               </div>
             </section>
