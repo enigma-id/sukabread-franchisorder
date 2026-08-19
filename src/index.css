@@ -5,28 +5,28 @@
   exclude: input, modal, drawer, table;
 }
 
-@import './components/ui/drawer/drawer.css';
-@import './components/ui/file/file.css';
-@import './components/ui/input/input.css';
-@import './components/ui/modal/modal.css';
-@import './components/ui/select/select.css';
-@import './components/ui/table/table.css';
-@import './components/ui/card/card.css';
-@import './components/app/app.css';
+@import "./components/ui/drawer/drawer.css";
+@import "./components/ui/file/file.css";
+@import "./components/ui/input/input.css";
+@import "./components/ui/modal/modal.css";
+@import "./components/ui/select/select.css";
+@import "./components/ui/table/table.css";
+@import "./components/ui/card/card.css";
+@import "./components/app/app.css";
 
 @plugin "daisyui/theme" {
-  name: 'sukabread';
+  name: "sukabread";
   default: true;
   prefersdark: false;
-  color-scheme: 'light';
+  color-scheme: "light";
 
   --color-base-100: oklch(1 0 0);
   --color-base-200: oklch(0.978 0.003 264.91);
-  --color-base-300: oklch(0.940 0.007 264.91);
+  --color-base-300: oklch(0.941 0.007 264.91);
   --color-base-content: oklch(0.35 0.01 264.91);
   --color-base-content-shadow: oklch(0.35 0.01 264.91/0.12);
-  --color-primary: oklch(0.701 0.233 49.71);
-  --color-primary-shadow: oklch(0.701 0.233 49.71/0.12);
+  --color-primary: oklch(39.7% 0.044 249);
+  --color-primary-shadow: oklch(39.7% 0.044 249 / 0.2);
   --color-primary-content: oklch(100% 0 0);
   --color-secondary: oklch(0.975 0.003 0);
   --color-secondary-shadow: oklch(0.975 0.003 0/0.08);
@@ -99,8 +99,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 .animate-float {
