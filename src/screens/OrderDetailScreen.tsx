@@ -440,28 +440,30 @@ const OrderDetailScreen = () => {
               ) : (
                 <>
                   {/* Manual Transfer: account_number */}
-                  <button
-                    onClick={() =>
-                      handleCopy(
-                        order.payment_method?.account_number || "",
-                        "Account Number",
-                      )
-                    }
-                    className='group flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 transition-all text-left hover:border-primary/30'
-                  >
-                    <div className='flex justify-between items-center mb-1'>
-                      <span className='text-[10px] font-bold text-base-content/40 uppercase'>
-                        Account Number
+                  {order?.payment_method?.provider !== "saldo" && (
+                    <button
+                      onClick={() =>
+                        handleCopy(
+                          order.payment_method?.account_number || "",
+                          "Account Number",
+                        )
+                      }
+                      className='group flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 transition-all text-left hover:border-primary/30'
+                    >
+                      <div className='flex justify-between items-center mb-1'>
+                        <span className='text-[10px] font-bold text-base-content/40 uppercase'>
+                          Account Number
+                        </span>
+                        <Copy
+                          size={12}
+                          className='text-primary opacity-0 group-hover:opacity-100 transition-all'
+                        />
+                      </div>
+                      <span className='text-sm font-black font-mono tracking-wider text-primary'>
+                        {order.payment_method?.account_number || "-"}
                       </span>
-                      <Copy
-                        size={12}
-                        className='text-primary opacity-0 group-hover:opacity-100 transition-all'
-                      />
-                    </div>
-                    <span className='text-sm font-black font-mono tracking-wider text-primary'>
-                      {order.payment_method?.account_number || "-"}
-                    </span>
-                  </button>
+                    </button>
+                  )}
 
                   <div className='flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 text-left'>
                     <span className='text-[10px] font-bold text-base-content/40 uppercase mb-1'>
