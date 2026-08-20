@@ -11,6 +11,9 @@ import CatalogScreen from "./screens/CatalogScreen";
 import OrderListScreen from "./screens/OrderListScreen";
 import OrderDetailScreen from "./screens/OrderDetailScreen";
 import CheckoutScreen from "./screens/CheckoutScreen";
+import WalletScreen from "./screens/WalletScreen";
+import TopupScreen from "./screens/TopupScreen";
+import WithdrawalScreen from "./screens/WithdrawalScreen";
 
 const MainLayout = () => (
   <div className="min-h-screen bg-base-200 pb-16">
@@ -35,6 +38,9 @@ function App() {
           <Route path="/orders" element={<OrderListScreen />} />
           <Route path="/order/:id" element={<OrderDetailScreen />} />
           <Route path="/checkout" element={<CheckoutScreen />} />
+          <Route path="/wallet" element={<WalletScreen />} />
+          <Route path="/wallet/topup" element={<TopupScreen />} />
+          <Route path="/wallet/withdrawal" element={<WithdrawalScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
         </Route>
       </Route>

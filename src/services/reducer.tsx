@@ -6,6 +6,7 @@ import { catalogApi } from "./catalog/api";
 import { orderApi } from "./order/api";
 import { cartApi } from "./cart/api";
 import { profileApi } from "./profile/api";
+import { walletApi } from "./wallet/api";
 import cartReducer from "./cart/slice";
 import { formReducer } from "./form/slice";
 import { authReducer, logout } from "./auth/slice";
@@ -20,6 +21,7 @@ const appReducer = combineReducers({
   [orderApi.reducerPath]: orderApi.reducer,
   [cartApi.reducerPath]: cartApi.reducer,
   [profileApi.reducerPath]: profileApi.reducer,
+  [walletApi.reducerPath]: walletApi.reducer,
 });
 
 export type AppState = ReturnType<typeof appReducer>;
@@ -30,6 +32,7 @@ export const apiMiddlewares = [
   orderApi.middleware,
   cartApi.middleware,
   profileApi.middleware,
+  walletApi.middleware,
 ];
 
 export const rootReducer: Reducer<AppState, UnknownAction> = (

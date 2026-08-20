@@ -17,10 +17,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      className="group bg-white rounded-[2rem] p-3 border border-base-200 premium-shadow flex flex-col gap-3 transition-all duration-300 hover:border-primary/20"
+      className="group bg-white rounded-2xl p-2 border border-base-200 premium-shadow flex flex-col gap-2 transition-all duration-300 hover:border-primary/20"
     >
       {/* Image Container - Square Widget Style */}
-      <div className="relative aspect-square rounded-[1.5rem] overflow-hidden bg-base-100">
+      <div className="relative aspect-square rounded-xl overflow-hidden bg-base-100">
         <img
           src={"https://placehold.co/400x400?text=no-image"}
           alt={product?.name}
@@ -40,7 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
         )}
 
         {/* Action Overlay - subtle gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
 
       {/* Info Section */}
@@ -61,14 +61,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
           </span>
         </div>
 
-        <div className="flex items-center justify-between mt-2">
+        {/* <div className="flex items-center justify-between mt-2">
           <span className="text-[10px] font-bold text-base-content/20 uppercase tracking-widest truncate max-w-[60%]">
             {product?.code}
           </span>
           <span className="text-[10px] font-black text-primary/30">
             {(product?.weight / 1000).toFixed(1)}kg
           </span>
-        </div>
+        </div> */}
 
         {/* Action Controls - Smart Widget Style */}
         <div className="mt-auto pt-3">
@@ -96,7 +96,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
                 onAdd(product, quantity);
                 setQuantity(1);
               }}
-              className="flex items-center justify-center gap-2 bg-primary text-white rounded-xl px-4 py-2.5 shadow-lg shadow-primary/20 active:scale-95 transition-all hover:brightness-110 min-w-[44px]"
+              className="flex items-center justify-center gap-2 bg-primary text-white rounded-xl px-4 py-2.5 shadow-lg shadow-primary/20 active:scale-95 transition-all hover:brightness-110 min-w-11"
             >
               <ShoppingCart size={16} strokeWidth={2.5} />
               <span className="text-[10px] font-black uppercase tracking-widest block @[180px]:hidden">

@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { ShoppingBag, ClipboardList, CreditCard, User } from "lucide-react";
+import { ShoppingBag, ClipboardList, Wallet, CreditCard, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../services/store";
@@ -13,7 +13,7 @@ const BottomMenu = () => {
   const menuItems = [
     { path: "/", label: "Catalog", icon: ShoppingBag },
     { path: "/orders", label: "Orders", icon: ClipboardList },
-    { path: "/checkout", label: "Checkout", icon: CreditCard, hasBadge: true },
+    { path: "/wallet", label: "Wallet", icon: Wallet },
     { path: "/profile", label: "Profile", icon: User },
   ];
 
