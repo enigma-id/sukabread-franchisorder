@@ -15,7 +15,7 @@ import WithdrawalForm from "@/components/app/WithdrawalForm";
 
 const statusColor = (s: string) => {
   if (s === "approved") return "text-green-500 bg-green-50";
-  if (s === "rejected") return "text-red-500 bg-red-50";
+  if (s === "rejected" || s === "cancelled") return "text-red-500 bg-red-50";
   return "text-yellow-500 bg-yellow-50";
 };
 

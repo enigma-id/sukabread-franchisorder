@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react";
-import { ArrowLeft, XCircle, Eye } from "lucide-react";
+import { ArrowLeft, XCircle, Eye, Copy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTopupRequests, useWalletActions } from "../services/wallet/hooks";
 import { currencyFormat } from "@/utils";
@@ -12,7 +12,7 @@ import TopupForm from "@/components/app/TopupForm";
 
 const statusColor = (s: string) => {
   if (s === "approved") return "text-green-500 bg-green-50";
-  if (s === "rejected") return "text-red-500 bg-red-50";
+  if (s === "rejected" || s === "cancelled") return "text-red-500 bg-red-50";
   return "text-yellow-500 bg-yellow-50";
 };
 
@@ -23,11 +23,20 @@ const TopupScreen = () => {
     useWalletActions();
 
   const [triggerDetail] = useLazyGetTopupRequestDetailQuery();
-  const { openModal, closeModal } = useEnigmaUI();
+  const { showToast, openModal, closeModal } = useEnigmaUI();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    showToast({
+      message: `${label} copied to clipboard!`,
+      type: "success",
+      position: "top-center",
+    });
+  };
 
   const handleCancel = (id: string) => {
     openModal({
@@ -115,16 +124,32 @@ const TopupScreen = () => {
                       <p className="text-[10px] font-bold text-base-content/40 uppercase">
                         Bank
                       </p>
-                      <p className="text-sm font-black text-base-content">
+                      <p className="text-sm font-black text-base-content uppercase">
                         {detail.payment?.bank_name}
                       </p>
                     </div>
                     <div className="p-4 bg-base-100 rounded-2xl border border-base-200">
-                      <p className="text-[10px] font-bold text-base-content/40 uppercase">
-                        Virtual Account Number
-                      </p>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[10px] font-bold text-base-content/40 uppercase">
+                          Virtual Account Number
+                        </span>
+                        {detail.payment?.va_number && (
+                          <button
+                            onClick={() =>
+                              handleCopy(
+                                detail.payment?.va_number || "",
+                                "VA Number",
+                              )
+                            }
+                            className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary active:scale-90 transition-all"
+                            aria-label="Copy VA Number"
+                          >
+                            <Copy size={12} />
+                          </button>
+                        )}
+                      </div>
                       <p className="text-sm font-black font-mono text-primary">
-                        {detail.va_number}
+                        {detail.payment?.va_number}
                       </p>
                     </div>
                   </div>
@@ -274,7 +299,7 @@ const TopupScreen = () => {
                         className="bg-green-50 hover:bg-green-100 border border-green-200 text-green-600 rounded-xl py-2 font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
                       >
                         <Eye size={14} />
-                        Detail
+                        Pembayaran
                       </button>
                       <button
                         onClick={() => handleCancel(req.id)}
