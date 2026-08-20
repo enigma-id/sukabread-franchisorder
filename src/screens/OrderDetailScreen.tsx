@@ -183,13 +183,13 @@ const OrderDetailScreen = () => {
 
   return (
     <div className='min-h-screen bg-base-200 pb-80'>
-      <header className='sticky top-0 z-40 bg-base-200/80 backdrop-blur-xl px-6 py-6 border-b border-white/20'>
+      <header className='sticky top-0 z-40 bg-base-200/80 backdrop-blur-xl px-4 py-4 border-b border-white/20'>
         <div className='max-w-lg mx-auto flex items-center justify-between'>
           <button
             onClick={() => navigate(-1)}
-            className='w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-base-content/40 active:scale-95 transition-all border border-base-200'
+            className='w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-base-content/40 active:scale-95 transition-all border border-base-200'
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={18} />
           </button>
 
           <div className='flex flex-col items-center justify-center'>
@@ -272,56 +272,56 @@ const OrderDetailScreen = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className='bg-white rounded-[2rem] p-6 border border-base-200 premium-shadow mb-6 relative overflow-hidden'
+            className='bg-white rounded-2xl p-4 border border-base-200 premium-shadow mb-4 relative overflow-hidden'
           >
             {/* Expiry Countdown */}
             {timeLeft && (
-              <div className='relative overflow-hidden bg-primary rounded-2xl mb-6 p-4 shadow-xl shadow-primary/20'>
+              <div className='relative overflow-hidden bg-primary rounded-xl mb-4 p-3 shadow-xl shadow-primary/20'>
                 <div className='absolute inset-0 opacity-10 pointer-events-none pattern-dots' />
 
                 <div className='relative z-10 flex items-center justify-between'>
-                  <div className='flex items-center gap-3'>
-                    <div className='w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white'>
-                      <Timer size={20} className='animate-pulse' />
+                  <div className='flex items-center gap-2'>
+                    <div className='w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white'>
+                      <Timer size={16} className='animate-pulse' />
                     </div>
                     <div className='flex flex-col'>
-                      <span className='text-[10px] font-black text-white uppercase tracking-widest leading-none mb-1'>
+                      <span className='text-[9px] font-black text-white uppercase tracking-widest leading-none mb-0.5'>
                         PAYMENT EXPIRES IN
                       </span>
-                      <span className='text-[8px] font-bold text-white/70 uppercase tracking-widest'>
+                      <span className='text-[7px] font-bold text-white/70 uppercase tracking-widest'>
                         Complete payment before time runs out
                       </span>
                     </div>
                   </div>
 
-                  <div className='flex items-center gap-2'>
+                  <div className='flex items-center gap-1.5'>
                     <div className='flex flex-col items-center'>
-                      <span className='text-2xl font-black text-white font-mono tabular-nums leading-none'>
+                      <span className='text-lg font-black text-white font-mono tabular-nums leading-none'>
                         {timeLeft.h.toString().padStart(2, "0")}
                       </span>
-                      <span className='text-[8px] font-bold text-white/50 uppercase mt-1'>
+                      <span className='text-[7px] font-bold text-white/50 uppercase mt-0.5'>
                         HRS
                       </span>
                     </div>
-                    <span className='text-xl font-black text-white/30 mb-4'>
+                    <span className='text-lg font-black text-white/30 mb-2'>
                       :
                     </span>
                     <div className='flex flex-col items-center'>
-                      <span className='text-2xl font-black text-white font-mono tabular-nums leading-none'>
+                      <span className='text-lg font-black text-white font-mono tabular-nums leading-none'>
                         {timeLeft.m.toString().padStart(2, "0")}
                       </span>
-                      <span className='text-[8px] font-bold text-white/50 uppercase mt-1'>
+                      <span className='text-[7px] font-bold text-white/50 uppercase mt-0.5'>
                         MIN
                       </span>
                     </div>
-                    <span className='text-xl font-black text-white/30 mb-4'>
+                    <span className='text-lg font-black text-white/30 mb-2'>
                       :
                     </span>
                     <div className='flex flex-col items-center'>
-                      <span className='text-2xl font-black text-white font-mono tabular-nums leading-none'>
+                      <span className='text-lg font-black text-white font-mono tabular-nums leading-none'>
                         {timeLeft.s.toString().padStart(2, "0")}
                       </span>
-                      <span className='text-[8px] font-bold text-white/50 uppercase mt-1'>
+                      <span className='text-[7px] font-bold text-white/50 uppercase mt-0.5'>
                         SEC
                       </span>
                     </div>
@@ -330,22 +330,22 @@ const OrderDetailScreen = () => {
               </div>
             )}
 
-            <div className='flex items-center justify-between gap-4 mb-6'>
-              <div className='flex items-center gap-4'>
-                <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary'>
-                  <Receipt size={18} />
+            <div className='flex items-center justify-between gap-3 mb-4'>
+              <div className='flex items-center gap-3'>
+                <div className='w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary'>
+                  <Receipt size={16} />
                 </div>
                 <div>
-                  <h3 className='text-[10px] font-black uppercase tracking-widest text-base-content/40'>
+                  <h3 className='text-[9px] font-black uppercase tracking-widest text-base-content/40'>
                     Payment Method
                   </h3>
-                  <p className='text-sm font-black text-base-content uppercase'>
+                  <p className='text-xs font-black text-base-content uppercase'>
                     {order.payment_method?.name || "Digital Payment"}
                   </p>
                 </div>
               </div>
               <div
-                className={`px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-widest ${getStatusColor(order.payment_status)}`}
+                className={`px-2 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest ${getStatusColor(order.payment_status)}`}
               >
                 {order.payment_status}
               </div>
@@ -353,7 +353,7 @@ const OrderDetailScreen = () => {
 
             <div className='flex flex-col gap-3'>
               {/* Account info berdasarkan tipe payment */}
-              {order.payment_method?.provider === "qris" ? (
+              {order.payment_method?.provider === "saldo" ? null : order.payment_method?.provider === "qris" ? (
                 <>
                   {/* QRIS: tampilkan QR langsung */}
                   <div className='flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 text-left'>
@@ -517,7 +517,7 @@ const OrderDetailScreen = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className='bg-white rounded-[2rem] p-6 border border-base-200 premium-shadow mb-8'
+          className='bg-white rounded-2xl p-4 border border-base-200 premium-shadow mb-4'
         >
           <div className='flex items-center justify-between gap-4 mb-4'>
             <div className='flex items-center gap-4'>
@@ -573,7 +573,7 @@ const OrderDetailScreen = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.18 }}
-          className='bg-white rounded-[2rem] p-6 border border-base-200 premium-shadow mb-8'
+          className='bg-white rounded-2xl p-4 border border-base-200 premium-shadow mb-4'
         >
           <div className='flex items-center gap-4 mb-4'>
             <div className='w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500'>
@@ -616,7 +616,7 @@ const OrderDetailScreen = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className='bg-white rounded-[2rem] p-6 border border-base-200 premium-shadow mb-8'
+            className='bg-white rounded-2xl p-4 border border-base-200 premium-shadow mb-4'
           >
             <div className='flex items-center gap-4 mb-4'>
               <div className='w-10 h-10 rounded-xl bg-gray-500/10 flex items-center justify-center text-gray-500'>
@@ -730,12 +730,12 @@ const OrderDetailScreen = () => {
       </div>
 
       {/* Floating Bill Breakdown Card */}
-      <div className='fixed bottom-24 left-0 right-0 z-50 px-6'>
+      <div className='fixed bottom-28 left-0 right-0 z-50 px-4'>
         <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className='bg-base-100/90 backdrop-blur-xl rounded-[2rem] p-6 border-2 border-dashed border-base-300 shadow-2xl max-w-md mx-auto'
+          className='bg-base-100/90 backdrop-blur-xl rounded-2xl p-4 border-2 border-dashed border-base-300 shadow-2xl max-w-md mx-auto'
         >
           <div className='flex flex-col gap-3'>
             <div className='flex justify-between items-center px-2'>

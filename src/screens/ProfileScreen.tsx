@@ -80,31 +80,31 @@ const ProfileScreen = () => {
     <div className='min-h-screen bg-base-200 pb-40'>
       <StickyHeader showSearch={false} />
 
-      <div className='px-6 pt-6 max-w-lg mx-auto'>
+      <div className='px-4 pt-4 max-w-lg mx-auto'>
         {/* Premium Profile Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className='relative overflow-hidden bg-gradient-to-br from-primary via-primary to-primary-focus rounded-[3rem] p-8 shadow-2xl mb-10 group'
+          className='relative overflow-hidden bg-gradient-to-br from-primary via-primary to-primary-focus rounded-3xl p-6 shadow-2xl mb-6 group'
         >
           <div className='absolute inset-0 pattern-dots opacity-20 pointer-events-none' />
           <div className='absolute -top-24 -right-24 w-64 h-64 bg-white/10 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-700' />
           <div className='absolute -bottom-24 -left-24 w-64 h-64 bg-black/10 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-700' />
 
           <div className='relative z-10 flex flex-col items-center text-center'>
-            <div className='w-28 h-28 rounded-[2.5rem] bg-white shadow-2xl flex items-center justify-center mb-6 relative group/avatar'>
-              <div className='absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent rounded-[2.5rem]' />
-              <span className='text-5xl font-black text-primary italic relative z-10'>
+            <div className='w-20 h-20 rounded-2xl bg-white shadow-2xl flex items-center justify-center mb-4 relative group/avatar'>
+              <div className='absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent rounded-2xl' />
+              <span className='text-3xl font-black text-primary italic relative z-10'>
                 {session?.user?.name?.charAt(0) ||
                   session?.user?.username?.charAt(0) ||
                   "U"}
               </span>
-              <div className='absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 border-4 border-white rounded-2xl shadow-lg flex items-center justify-center'>
-                <Shield size={16} className='text-white' />
+              <div className='absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 border-2 border-white rounded-xl shadow-lg flex items-center justify-center'>
+                <Shield size={14} className='text-white' />
               </div>
             </div>
 
-            <h2 className='text-3xl font-black text-white tracking-tight leading-none mb-3'>
+            <h2 className='text-2xl font-black text-white tracking-tight leading-none'>
               {session?.user?.name || "Premium Member"}
             </h2>
           </div>
@@ -112,7 +112,7 @@ const ProfileScreen = () => {
           <svg
             viewBox='0 0 1440 390'
             xmlns='http://www.w3.org/2000/svg'
-            className='absolute bottom-0 left-0 w-full h-[80px] pointer-events-none'
+            className='absolute bottom-0 left-0 w-full h-20 pointer-events-none'
             style={{ opacity: 0.15 }}
             preserveAspectRatio='none'
           >
@@ -123,18 +123,18 @@ const ProfileScreen = () => {
           </svg>
         </motion.div>
 
-        <div className='space-y-10'>
-          <div className='grid grid-cols-1 gap-8'>
+        <div className='space-y-6'>
+          <div className='grid grid-cols-1 gap-6'>
             {/* Account Details */}
             <section>
               <SectionTitle
                 title='ACCOUNT INFO'
                 subtitle='Security & Profile'
               />
-              <div className='bg-white rounded-[2.5rem] p-6 border border-base-200 shadow-sm space-y-5'>
-                <div className='flex items-center gap-4'>
-                  <div className='w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary border border-primary/10'>
-                    <UserCircle2 size={22} />
+              <div className='bg-white rounded-2xl p-4 border border-base-200 shadow-sm space-y-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary border border-primary/10'>
+                    <UserCircle2 size={18} />
                   </div>
                   <div className='flex flex-col'>
                     <span className='text-[10px] font-black uppercase tracking-widest text-base-content/30'>
@@ -151,10 +151,10 @@ const ProfileScreen = () => {
             {/* Outlet Info - from live API */}
             <section>
               <SectionTitle title='OUTLET INFO' subtitle='Store Location' />
-              <div className='bg-white rounded-[2.5rem] p-6 border border-base-200 shadow-sm space-y-5'>
-                <div className='flex items-center gap-4'>
-                  <div className='w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 border border-orange-100'>
-                    <Store size={22} />
+              <div className='bg-white rounded-2xl p-4 border border-base-200 shadow-sm space-y-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 border border-orange-100'>
+                    <Store size={18} />
                   </div>
                   <div className='flex flex-col'>
                     <span className='text-[10px] font-black uppercase tracking-widest text-base-content/30'>
@@ -168,9 +168,9 @@ const ProfileScreen = () => {
 
                 <div className='h-px bg-base-100' />
 
-                <div className='flex items-center gap-4'>
-                  <div className='w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 border border-orange-100'>
-                    <Receipt size={22} />
+                <div className='flex items-center gap-3'>
+                  <div className='w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 border border-orange-100'>
+                    <Receipt size={18} />
                   </div>
                   <div className='flex flex-col'>
                     <span className='text-[10px] font-black uppercase tracking-widest text-base-content/30'>
@@ -184,9 +184,9 @@ const ProfileScreen = () => {
 
                 <div className='h-px bg-base-100' />
 
-                <div className='flex items-center gap-4'>
-                  <div className='w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 border border-orange-100'>
-                    <MapPin size={22} />
+                <div className='flex items-center gap-3'>
+                  <div className='w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 border border-orange-100'>
+                    <MapPin size={18} />
                   </div>
                   <div className='flex flex-col'>
                     <span className='text-[10px] font-black uppercase tracking-widest text-base-content/30'>
@@ -207,9 +207,9 @@ const ProfileScreen = () => {
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className='w-full h-16 bg-red-50 text-red-500 rounded-[2rem] border border-red-100 font-black text-sm uppercase tracking-[0.2em] shadow-sm hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-3 active:scale-95'
+            className='w-full h-12 bg-red-50 text-red-500 rounded-2xl border border-red-100 font-black text-xs uppercase tracking-[0.2em] shadow-sm hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2 active:scale-95'
           >
-            <LogOut size={20} />
+            <LogOut size={16} />
             Sign Out
           </button>
         </div>

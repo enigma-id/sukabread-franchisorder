@@ -117,30 +117,32 @@ const OrderListScreen = () => {
   return (
     <div className="min-h-screen bg-base-200 pb-32">
       <StickyHeader showSearch={false}>
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar justify-center">
-          {["", "pending", "completed", "canceled"].map((status) => (
-            <button
-              key={status}
-              onClick={() => handleStatusChange(status)}
-              className={`px-6 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
-                params.status === status
-                  ? "bg-primary text-white shadow-lg shadow-primary/20"
-                  : "bg-white text-base-content/40 border border-base-200 hover:border-primary/20"
-              }`}
-            >
-              {status === "" ? "All Orders" : status}
-            </button>
-          ))}
+        <div className="overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-2 w-max mx-auto">
+            {["", "pending", "completed", "canceled"].map((status) => (
+              <button
+                key={status}
+                onClick={() => handleStatusChange(status)}
+                className={`px-6 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                  params.status === status
+                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                    : "bg-white text-base-content/40 border border-base-200 hover:border-primary/20"
+                }`}
+              >
+                {status === "" ? "All Orders" : status}
+              </button>
+            ))}
+          </div>
         </div>
       </StickyHeader>
 
-      <div className="px-6 pt-6 max-w-lg mx-auto">
+      <div className="px-4 pt-4 max-w-lg mx-auto">
         <SectionTitle
           title="RECENT ACTIVITY"
           subtitle={`${orders.length} orders found`}
         />
 
-        <div className="flex flex-col gap-4 relative">
+        <div className="flex flex-col gap-3 relative">
           <AnimatePresence mode="popLayout">
             {isFetching && (
               <motion.div
@@ -173,18 +175,18 @@ const OrderListScreen = () => {
                   transition={{ delay: index * 0.05 }}
                   key={order.id}
                   onClick={() => navigate(`/order/${order.id}`)}
-                  className={`relative overflow-hidden ${cardBg} rounded-3xl border ${cardBorder} p-5 flex items-center justify-between premium-shadow cursor-pointer active:scale-95 transition-all group`}
+                  className={`relative overflow-hidden ${cardBg} rounded-2xl border ${cardBorder} p-4 flex items-center justify-between premium-shadow cursor-pointer active:scale-95 transition-all group`}
                 >
                   {/* Status Indicator Bar */}
                   <div
                     className={`absolute left-0 top-0 bottom-0 w-1 ${statusColor}`}
                   />
 
-                  <div className="flex items-center gap-5 z-10 min-w-0">
+                  <div className="flex items-center gap-3 z-10 min-w-0">
                     <div
-                      className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${bgColor}`}
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${bgColor}`}
                     >
-                      <theme.icon className={iconColor} size={24} />
+                      <theme.icon className={iconColor} size={20} />
                     </div>
 
                     <div className="flex flex-col min-w-0">
@@ -194,7 +196,7 @@ const OrderListScreen = () => {
                           {order.code}
                         </span>
                       </span>
-                      <span className="text-lg font-black text-base-content tracking-tight mt-0.5">
+                      <span className="text-base font-black text-base-content tracking-tight mt-0.5">
                         {currencyFormat(order.total_charges)}
                       </span>
                       <span className="text-[9px] font-bold text-base-content/50 mt-1 uppercase">
@@ -230,7 +232,7 @@ const OrderListScreen = () => {
                   <svg
                     viewBox="0 0 1440 390"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="absolute bottom-0 left-0 w-full h-[50px] pointer-events-none"
+                    className="absolute bottom-0 left-0 w-full h-12.5 pointer-events-none"
                     style={{ opacity: 0.05, transform: "scaleX(-1)" }}
                     preserveAspectRatio="none"
                   >
@@ -245,9 +247,9 @@ const OrderListScreen = () => {
           </AnimatePresence>
 
           {orders.length === 0 && !isFetching && (
-            <div className="flex flex-col items-center justify-center py-24 bg-white/50 rounded-[3rem] border-2 border-dashed border-base-300">
-              <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-inner mb-6">
-                <Search size={40} className="text-base-content/20" />
+            <div className="flex flex-col items-center justify-center py-20 bg-white/50 rounded-3xl border-2 border-dashed border-base-300">
+              <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-inner mb-4">
+                <Search size={32} className="text-base-content/20" />
               </div>
               <h3 className="text-lg font-black tracking-tight uppercase">
                 No orders found

@@ -58,7 +58,7 @@ const CatalogScreen = () => {
         isFetching={isFetching}
       />
 
-      <div className="px-6 pt-6 pb-24 max-w-lg mx-auto">
+      <div className="px-4 pt-4 pb-20 max-w-lg mx-auto">
         {/* Categories / Sections */}
         <AnimatePresence mode="wait">
           {products.length > 0 ? (
@@ -66,7 +66,7 @@ const CatalogScreen = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid grid-cols-2 gap-4"
+              className="grid grid-cols-2 gap-3"
             >
               {products.map((product: CatalogItem, index: number) => (
                 <ProductCard
