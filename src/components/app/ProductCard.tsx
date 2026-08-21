@@ -17,22 +17,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      className="group bg-white rounded-2xl p-2 border border-base-200 premium-shadow flex flex-col gap-2 transition-all duration-300 hover:border-primary/20"
+      className='group bg-white rounded-2xl p-2 border border-base-200 premium-shadow flex flex-col gap-2 transition-all duration-300 hover:border-primary/20'
     >
       {/* Image Container - Square Widget Style */}
-      <div className="relative aspect-square rounded-xl overflow-hidden bg-base-100">
+      <div className='relative aspect-square rounded-xl overflow-hidden bg-base-100'>
         <img
-          src={"https://placehold.co/400x400?text=no-image"}
+          src={product?.image || "https://placehold.co/400x400?text=no-image"}
           alt={product?.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className='w-full h-full object-cover transition-transform duration-700 group-hover:scale-110'
         />
 
         {/* Bundle Badge - Top Left */}
         {product.is_bundle && (
-          <div className="absolute top-2 left-2 z-10">
-            <div className="bg-primary/90 px-2 py-1 rounded-lg flex items-center gap-1 shadow-lg">
-              <div className="w-1 h-1 rounded-full bg-white animate-pulse" />
-              <span className="text-[7px] font-black text-white uppercase tracking-tighter">
+          <div className='absolute top-2 left-2 z-10'>
+            <div className='bg-primary/90 px-2 py-1 rounded-lg flex items-center gap-1 shadow-lg'>
+              <div className='w-1 h-1 rounded-full bg-white animate-pulse' />
+              <span className='text-[7px] font-black text-white uppercase tracking-tighter'>
                 BUNDLE
               </span>
             </div>
@@ -40,12 +40,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
         )}
 
         {/* Action Overlay - subtle gradient */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className='absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity' />
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-col px-1 flex-1">
-        <h3 className="text-[14px] font-black text-base-content leading-tight uppercase tracking-tight line-clamp-2">
+      <div className='flex flex-col px-1 flex-1'>
+        <h3 className='text-[14px] font-black text-base-content leading-tight uppercase tracking-tight line-clamp-2'>
           {product?.name}
         </h3>
 
@@ -55,8 +55,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
           </p>
         )} */}
 
-        <div className="mt-2">
-          <span className="text-base font-black text-primary italic leading-none">
+        <div className='mt-2'>
+          <span className='text-base font-black text-primary italic leading-none'>
             {currencyFormat(product?.unit_price)}
           </span>
         </div>
@@ -71,21 +71,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
         </div> */}
 
         {/* Action Controls - Smart Widget Style */}
-        <div className="mt-auto pt-3">
-          <div className="flex flex-col @[180px]:flex-row gap-2">
-            <div className="flex flex-1 items-center justify-between bg-base-200/50 p-1 rounded-[1.25rem] border border-base-200/50">
+        <div className='mt-auto pt-3'>
+          <div className='flex flex-col @[180px]:flex-row gap-2'>
+            <div className='flex flex-1 items-center justify-between bg-base-200/50 p-1 rounded-[1.25rem] border border-base-200/50'>
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-base-content/30 hover:text-primary transition-colors active:scale-90"
+                className='w-8 h-8 rounded-lg flex items-center justify-center text-base-content/30 hover:text-primary transition-colors active:scale-90'
               >
                 <Minus size={14} strokeWidth={3} />
               </button>
-              <span className="text-[12px] font-black text-base-content w-8 text-center">
+              <span className='text-[12px] font-black text-base-content w-8 text-center'>
                 {quantity}
               </span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-base-content/30 hover:text-primary transition-colors active:scale-90"
+                className='w-8 h-8 rounded-lg flex items-center justify-center text-base-content/30 hover:text-primary transition-colors active:scale-90'
               >
                 <Plus size={14} strokeWidth={3} />
               </button>
@@ -96,10 +96,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAdd }) => {
                 onAdd(product, quantity);
                 setQuantity(1);
               }}
-              className="flex items-center justify-center gap-2 bg-primary text-white rounded-xl px-4 py-2.5 shadow-lg shadow-primary/20 active:scale-95 transition-all hover:brightness-110 min-w-11"
+              className='flex items-center justify-center gap-2 bg-primary text-white rounded-xl px-4 py-2.5 shadow-lg shadow-primary/20 active:scale-95 transition-all hover:brightness-110 min-w-11'
             >
               <ShoppingCart size={16} strokeWidth={2.5} />
-              <span className="text-[10px] font-black uppercase tracking-widest block @[180px]:hidden">
+              <span className='text-[10px] font-black uppercase tracking-widest block @[180px]:hidden'>
                 Add to Cart
               </span>
             </button>

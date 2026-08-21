@@ -15,6 +15,7 @@ export interface CatalogItem {
   volume: number;
   measurement: string;
   unit: number;
+  image: string;
   is_active: boolean;
   is_vatable: boolean;
   created_by: string;
