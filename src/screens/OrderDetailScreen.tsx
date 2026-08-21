@@ -18,8 +18,10 @@ import {
   MapPin,
   User,
   FileText,
+  QrCode,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import QRCode from "react-qr-code";
 import { useEnigmaUI, Modal, Input } from "../components";
 import SectionTitle from "../components/app/SectionTitle";
 import { useState, useEffect } from "react";
@@ -67,6 +69,39 @@ const CancelOrderModal = ({ onConfirm, onClose, isPending }: any) => {
     </Modal.Wrapper>
   );
 };
+
+const QRModal = ({ code, onClose }: any) => (
+  <Modal.Wrapper open={true} onClose={onClose}>
+    <Modal.Body>
+      <div className='py-4 flex flex-col items-center gap-4'>
+        <div className='w-64 h-64 rounded-2xl bg-white p-4 border border-base-200'>
+          <QRCode
+            value={code}
+            size={256}
+            level='M'
+            className='w-full h-full'
+          />
+        </div>
+        <div className='flex flex-col items-center'>
+          <span className='text-sm font-mono font-black text-base-content'>
+            {code}
+          </span>
+          <span className='text-[10px] font-bold text-base-content/40 uppercase tracking-widest mt-1'>
+            Tunjukan ke admin untuk pengambilan barang
+          </span>
+        </div>
+      </div>
+    </Modal.Body>
+    <Modal.Footer>
+      <button
+        onClick={onClose}
+        className='w-full h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-base-200 hover:bg-base-100 transition-all'
+      >
+        Close
+      </button>
+    </Modal.Footer>
+  </Modal.Wrapper>
+);
 
 const OrderDetailScreen = () => {
   const { id } = useParams();
@@ -121,6 +156,18 @@ const OrderDetailScreen = () => {
           }}
           onClose={() => closeModal("cancel-order")}
           isPending={isCanceling}
+        />
+      ),
+    });
+  };
+
+  const handleShowQR = () => {
+    openModal({
+      id: "track-qr",
+      content: (
+        <QRModal
+          code={order?.code || ""}
+          onClose={() => closeModal("track-qr")}
         />
       ),
     });
@@ -264,6 +311,15 @@ const OrderDetailScreen = () => {
               </div>
             </div>
           </div>
+
+          <div className='mt-6 pt-6 border-t border-base-200'>
+            <button
+              onClick={handleShowQR}
+              className='w-full h-12 bg-primary/5 border border-primary/20 text-primary rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-primary/10 active:scale-95 transition-all flex items-center justify-center gap-2'
+            >
+              <QrCode size={16} /> Show QR Code
+            </button>
+          </div>
         </motion.div>
 
         {/* Payment Info Section */}
@@ -353,7 +409,8 @@ const OrderDetailScreen = () => {
 
             <div className='flex flex-col gap-3'>
               {/* Account info berdasarkan tipe payment */}
-              {order.payment_method?.provider === "saldo" ? null : order.payment_method?.provider === "qris" ? (
+              {order.payment_method?.provider === "saldo" ? null : order
+                  .payment_method?.provider === "qris" ? (
                 <>
                   {/* QRIS: tampilkan QR langsung */}
                   <div className='flex flex-col bg-base-100 rounded-2xl p-4 border border-base-200 text-left'>
@@ -528,19 +585,14 @@ const OrderDetailScreen = () => {
               </div>
               <div>
                 <h3 className='text-[10px] font-black uppercase tracking-widest text-base-content/40'>
-                  Logistics Detail
+                  Lokasi Pengambilan{" "}
                 </h3>
                 <p className='text-sm font-black text-base-content uppercase'>
-                  {order.warehouse_name || "Standard Shipping"}
+                  {order.warehouse_name || "-"}
                 </p>
               </div>
             </div>
             <div className='flex items-center gap-2'>
-              {order.self_pickup && (
-                <span className='px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-widest text-amber-500 bg-amber-50'>
-                  Self Pickup
-                </span>
-              )}
               <div
                 className={`px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-widest ${getStatusColor(order.fulfillment_status)}`}
               >
@@ -549,64 +601,14 @@ const OrderDetailScreen = () => {
             </div>
           </div>
           <div className='bg-base-100 rounded-2xl p-4 border border-base-200'>
-            <div className='flex justify-between items-center mb-2'>
-              <span className='text-[10px] font-bold text-base-content/40 uppercase'>
-                Expedition
-              </span>
-              <span className='text-xs font-black text-base-content'>
-                {order.warehouse_name || "Standard Shipping"}
-              </span>
-            </div>
             <div className='flex justify-between items-center'>
               <span className='text-[10px] font-bold text-base-content/40 uppercase'>
-                Est. Shipping Date
+                Tanggal Pickup
               </span>
               <span className='text-xs font-black text-base-content'>
                 {order.shipping_date && isNonZeroDate(order.shipping_date)
                   ? dateFormat(order.shipping_date, "DD MMMM YYYY")
                   : "To be determined"}
-              </span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Recipient Info Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.18 }}
-          className='bg-white rounded-2xl p-4 border border-base-200 premium-shadow mb-4'
-        >
-          <div className='flex items-center gap-4 mb-4'>
-            <div className='w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500'>
-              <User size={18} />
-            </div>
-            <div>
-              <h3 className='text-[10px] font-black uppercase tracking-widest text-base-content/40'>
-                Recipient
-              </h3>
-              <p className='text-sm font-black text-base-content uppercase'>
-                {order.recipient_name}
-              </p>
-            </div>
-          </div>
-          <div className='bg-base-100 rounded-2xl p-4 border border-base-200 space-y-3'>
-            <div className='flex justify-between items-center'>
-              <span className='text-[10px] font-bold text-base-content/40 uppercase'>
-                Phone
-              </span>
-              <span className='text-xs font-black text-base-content'>
-                {order.recipient_phone}
-              </span>
-            </div>
-            <div className='h-px bg-base-200' />
-            <div className='flex items-start gap-3'>
-              <MapPin
-                size={14}
-                className='text-base-content/30 mt-0.5 shrink-0'
-              />
-              <span className='text-xs font-bold text-base-content/70'>
-                {order.recipient_address}
               </span>
             </div>
           </div>
