@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useAppSelector } from "@/hooks";
 import type { PaymentMethod } from "@/services/types/payment";
 import { useCart } from "@/services/cart/hooks";
@@ -30,6 +30,12 @@ const TopupForm = ({
 
   const { getPayment, paymentResult } = useCart();
 
+  // Exclude saldo provider from topup payment methods
+  const paymentMethods = useMemo(() => {
+    const raw = (paymentResult?.data as any)?.data ?? [];
+    return raw.filter((item: PaymentMethod) => item?.provider !== "saldo");
+  }, [paymentResult?.data]);
+
   const handleSubmit = () => {
     const payload = {
       amount: Number(form?.amount),
@@ -57,7 +63,12 @@ const TopupForm = ({
           <RemoteSelect<PaymentMethod>
             required
             label="Metode Pembayaran"
-            hook={paymentResult as any}
+            hook={
+              {
+                ...paymentResult,
+                data: { ...(paymentResult?.data as any), data: paymentMethods },
+              } as any
+            }
             fetchData={(page, search) => getPayment({ page, search })}
             getLabel={(item: any) => `${item?.name}`}
             renderItem={(item: any) => (
