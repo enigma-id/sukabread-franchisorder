@@ -12,7 +12,7 @@ import {
 import { useFormActions } from "../form/hooks";
 
 export const useBalanceLogs = (limit = 20) => {
-  const query = useGetBalanceLogsQuery({ limit });
+  const query = useGetBalanceLogsQuery({ limit }, { refetchOnMountOrArgChange: true });
   return {
     balanceLogs: query.data?.data ?? [],
     query,
@@ -20,7 +20,7 @@ export const useBalanceLogs = (limit = 20) => {
 };
 
 export const useTopupRequests = () => {
-  const query = useGetTopupRequestsQuery({ limit: 25 });
+  const query = useGetTopupRequestsQuery({ limit: 25 }, { refetchOnMountOrArgChange: true });
   return {
     requests: query.data?.data ?? [],
     query,
@@ -28,7 +28,7 @@ export const useTopupRequests = () => {
 };
 
 export const useWithdrawalRequests = () => {
-  const query = useGetWithdrawalRequestsQuery({ limit: 25 });
+  const query = useGetWithdrawalRequestsQuery({ limit: 25 }, { refetchOnMountOrArgChange: true });
   return {
     requests: query.data?.data ?? [],
     query,

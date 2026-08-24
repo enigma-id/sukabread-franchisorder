@@ -10,8 +10,8 @@ export const useOrder = ({ id, params }: { id?: string; params?: Record<string, 
   const { showToast } = useEnigmaUI();
   const { failureWithTimeout } = useFormActions();
 
-  const listQuery = useGetOrdersQuery(params);
-  const detailQuery = useShowOrderQuery(id as string, { skip: !id });
+  const listQuery = useGetOrdersQuery(params, { refetchOnMountOrArgChange: true });
+  const detailQuery = useShowOrderQuery(id as string, { skip: !id, refetchOnMountOrArgChange: true });
   const [cancelOrderMutation, cancelOrderResult] = useCancelOrderMutation();
 
   const doCancelOrder = async (note: string) => {
