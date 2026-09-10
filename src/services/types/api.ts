@@ -102,9 +102,13 @@ export function isPaginatedResponse<T>(
 
 // ─── Order Types ────────────────────────────────────────────────────────────
 
-export type DocumentStatus = 'published' | 'process' | 'completed' | 'cancelled';
-export type FulfillmentStatus = 'new' | 'completed';
-export type PaymentStatus = 'unpaid' | 'paid';
+export type DocumentStatus =
+  | "published"
+  | "process"
+  | "completed"
+  | "cancelled";
+export type FulfillmentStatus = "new" | "completed";
+export type PaymentStatus = "unpaid" | "paid";
 
 export interface PaymentMethod {
   id: string;
@@ -168,8 +172,8 @@ export interface Order {
   code: string;
   ref_code?: string;
   outlet_id: string;
-  warehouse_id: string;
-  warehouse_name?: string;
+  source_warehouse_id: string;
+  source_warehouse_name?: string;
   order_type: string;
   recipient_name: string;
   recipient_phone: string;

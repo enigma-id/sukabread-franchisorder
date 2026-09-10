@@ -84,7 +84,7 @@ const CheckoutScreen = () => {
     try {
       const payload = {
         ...formData,
-        warehouse_id: warehouse?.id,
+        source_warehouse_id: warehouse?.id,
         payment_method_id: paymentMethod?.id,
         shipping_date: shippingDate?.format("YYYY-MM-DD"),
       };

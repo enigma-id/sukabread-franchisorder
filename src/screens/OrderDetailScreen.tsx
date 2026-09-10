@@ -75,12 +75,7 @@ const QRModal = ({ code, onClose }: any) => (
     <Modal.Body>
       <div className='py-4 flex flex-col items-center gap-4'>
         <div className='w-64 h-64 rounded-2xl bg-white p-4 border border-base-200'>
-          <QRCode
-            value={code}
-            size={256}
-            level='M'
-            className='w-full h-full'
-          />
+          <QRCode value={code} size={256} level='M' className='w-full h-full' />
         </div>
         <div className='flex flex-col items-center'>
           <span className='text-sm font-mono font-black text-base-content'>
@@ -588,7 +583,7 @@ const OrderDetailScreen = () => {
                   Lokasi Pengambilan{" "}
                 </h3>
                 <p className='text-sm font-black text-base-content uppercase'>
-                  {order.warehouse_name || "-"}
+                  {order.source_warehouse_name || "-"}
                 </p>
               </div>
             </div>
