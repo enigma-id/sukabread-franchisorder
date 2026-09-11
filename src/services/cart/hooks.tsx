@@ -7,6 +7,8 @@ import {
   useLazyGetPaymentMethodsQuery,
   useGetWarehouseQuery,
   useLazyGetWarehouseQuery,
+  useGetCashierQuery,
+  useLazyGetCashierQuery,
 } from "./api";
 import { $clearCart, $addItem, $removeItem, $updateQuantity } from "./slice";
 import type { RootState } from "../store";
@@ -20,11 +22,13 @@ export const useCart = () => {
   const [checkoutMutation, checkoutResult] = useCheckoutMutation();
   const [triggerPayment, paymentResult] = useLazyGetPaymentMethodsQuery();
   const [triggerWarehouse, warehouseResult] = useLazyGetWarehouseQuery();
+  const [triggerCashier, cashierResult] = useLazyGetCashierQuery();
   const { failureWithTimeout } = useFormActions();
 
   // Use query hook directly for payment methods as it's typically auto-fetched
   const paymentMethodsQuery = useGetPaymentMethodsQuery({});
   const warehouseQuery = useGetWarehouseQuery({});
+  const cashierQuery = useGetCashierQuery({});
 
   const addItem = (product: any, quantity: number) => {
     dispatch($addItem({ ...product, quantity }));
@@ -73,6 +77,14 @@ export const useCart = () => {
     }
   };
 
+  const getCashier = async (params: any) => {
+    try {
+      await triggerCashier(params).unwrap();
+    } catch (err) {
+      failureWithTimeout(err);
+    }
+  };
+
   const getPayment = async (params: any) => {
     try {
       await triggerPayment(params).unwrap();
@@ -89,14 +101,17 @@ export const useCart = () => {
     updateQuantity,
     clearCart,
     getWarehouse,
+    getCashier,
     getPayment,
 
     // Results/States
     checkoutResult,
     paymentResult,
     warehouseResult,
+    cashierResult,
     paymentMethodsQuery,
     warehouseQuery,
+    cashierQuery,
 
     // State
     items,
