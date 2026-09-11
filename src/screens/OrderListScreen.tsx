@@ -1,10 +1,9 @@
-import { useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOrder } from "../services/order/hooks";
 import { normalizeOrderStatus, mapStatusToBackend } from "../utils/order-status";
 import {
-  ChevronLeft,
-  ChevronRight,
   Search,
   ClipboardList,
   Clock,
@@ -27,6 +26,9 @@ const OrderListScreen = () => {
     status: "",
     order_by: "-sales_order:created_at" as string,
   });
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const apiParams = {
     ...params,
@@ -37,15 +39,39 @@ const OrderListScreen = () => {
   const { data, isLoading, isFetching } = listQuery;
   const navigate = useNavigate();
 
-  const handlePageChange = (newPage: number) => {
-    setParams((prev) => ({ ...prev, page: newPage }));
-  };
+  useEffect(() => {
+    if (!data) return;
+    const incoming = data.data || [];
+    setOrders((prev) => {
+      if (params.page === 1) return incoming;
+      const seen = new Set(prev.map((order) => order.id));
+      return [...prev, ...incoming.filter((order) => !seen.has(order.id))];
+    });
+    setHasMore(Boolean(data.meta?.has_next));
+  }, [data, params.page]);
+
+  useEffect(() => {
+    const el = loadMoreRef.current;
+    if (!el || !hasMore) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isFetching) {
+          setParams((prev) => ({ ...prev, page: prev.page + 1 }));
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasMore, isFetching]);
 
   const handleStatusChange = (status: string) => {
+    setOrders([]);
+    setHasMore(true);
     setParams((prev) => ({ ...prev, status, page: 1 }));
   };
 
-  if (isLoading) {
+  if (isLoading && params.page === 1) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-base-100">
         <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
@@ -55,9 +81,6 @@ const OrderListScreen = () => {
       </div>
     );
   }
-
-  const orders = data?.data || [];
-  const meta = data?.meta;
 
   const getStatusTheme = (status: string) => {
     const s = status?.toLowerCase();
@@ -144,7 +167,7 @@ const OrderListScreen = () => {
 
         <div className="flex flex-col gap-3 relative">
           <AnimatePresence mode="popLayout">
-            {isFetching && (
+            {isFetching && !isLoading && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -261,41 +284,22 @@ const OrderListScreen = () => {
           )}
         </div>
 
-        {/* Pagination */}
-        {meta && meta.total_pages > 1 && (
-          <div className="flex items-center justify-between mt-12 bg-white/60 p-2 rounded-2xl">
-            <button
-              onClick={() => handlePageChange(meta.page - 1)}
-              disabled={meta.page === 1}
-              className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-base-content/40 disabled:opacity-30 active:scale-95 transition-all"
-            >
-              <ChevronLeft size={20} />
-            </button>
+        {/* Load more */}
+        {hasMore && (
+          <div ref={loadMoreRef} className="flex justify-center py-8">
+            {isFetching && (
+              <span className="loading loading-spinner loading-md text-primary" />
+            )}
+          </div>
+        )}
 
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] font-black text-base-content/40 uppercase tracking-[0.2em]">
-                Page
-              </span>
-              <div className="flex items-center gap-1">
-                <span className="text-sm font-black text-primary">
-                  {meta.page}
-                </span>
-                <span className="text-sm font-black text-base-content/30">
-                  /
-                </span>
-                <span className="text-sm font-black text-base-content/50">
-                  {meta.total_pages}
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => handlePageChange(meta.page + 1)}
-              disabled={meta.page === meta.total_pages}
-              className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-base-content/40 disabled:opacity-30 active:scale-95 transition-all"
-            >
-              <ChevronRight size={20} />
-            </button>
+        {!hasMore && orders.length > 0 && (
+          <div className="flex items-center gap-3 py-8">
+            <div className="h-px flex-1 bg-base-300" />
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-base-content/30">
+              End of list
+            </span>
+            <div className="h-px flex-1 bg-base-300" />
           </div>
         )}
       </div>
