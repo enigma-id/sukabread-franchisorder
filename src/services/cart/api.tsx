@@ -26,6 +26,13 @@ export const cartApi = createApi({
         params,
       }),
     }),
+    getCashier: builder.query({
+      query: (params) => ({
+        url: "/cashier",
+        method: "GET",
+        params,
+      }),
+    }),
   }),
 });
 
@@ -35,4 +42,6 @@ export const {
   useLazyGetPaymentMethodsQuery,
   useGetWarehouseQuery,
   useLazyGetWarehouseQuery,
+  useGetCashierQuery,
+  useLazyGetCashierQuery,
 } = cartApi;

@@ -12,6 +12,7 @@ import {
   ArrowRight,
   ShoppingBag,
   PlusCircle,
+  User,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import dayjs from "dayjs";
@@ -22,6 +23,7 @@ import { useCart } from "../services/cart/hooks";
 import StickyHeader from "@/components/app/StickyHeader";
 import type { PaymentMethod } from "@/services/types/payment";
 import type { Warehouse } from "@/services/types/warehouse";
+import type { Cashier } from "@/services/types/cashier";
 import { useAppSelector } from "@/hooks";
 import { useProfile } from "@/services/profile/hooks";
 
@@ -43,6 +45,9 @@ const CheckoutScreen = () => {
     getWarehouse,
     warehouseResult,
     warehouseQuery,
+    getCashier,
+    cashierResult,
+    cashierQuery,
     paymentMethodsQuery,
   } = useCart();
 
@@ -51,6 +56,7 @@ const CheckoutScreen = () => {
     null,
   );
   const [warehouse, setWarehouse] = useState<Warehouse | null>(null);
+  const [cashier, setCashier] = useState<Cashier | null>(null);
   const [shippingDate, setShippingDate] = useState<any>(dayjs());
   const [formData] = useState<SalesOrderFormData>({
     self_pickup: true,
@@ -62,12 +68,22 @@ const CheckoutScreen = () => {
   const warehouseList = (warehouseQuery?.data as any)?.data ?? [];
   const isSingleWarehouse = warehouseList.length === 1;
 
+  const cashierList = (cashierQuery?.data as any)?.data ?? [];
+  const isSingleCashier = cashierList.length === 1;
+
   // Auto-select warehouse when exactly one is available
   useEffect(() => {
     if (isSingleWarehouse) {
       setWarehouse(warehouseList[0]);
     }
   }, [warehouseQuery?.data]);
+
+  // Auto-select cashier when exactly one is available
+  useEffect(() => {
+    if (isSingleCashier) {
+      setCashier(cashierList[0]);
+    }
+  }, [cashierQuery?.data]);
 
   // Auto-select saldo payment method
   useEffect(() => {
@@ -84,9 +100,13 @@ const CheckoutScreen = () => {
     try {
       const payload = {
         ...formData,
-        warehouse_id: warehouse?.id,
+        source_warehouse_id: warehouse?.id,
         payment_method_id: paymentMethod?.id,
         shipping_date: shippingDate?.format("YYYY-MM-DD"),
+        picked_up_by: {
+          id: cashier?.id,
+          name: cashier?.name,
+        },
       };
       const result = await doCheckout(payload);
       const orderId = result?.data?.id || result?.id;
@@ -248,6 +268,41 @@ const CheckoutScreen = () => {
                     error={FormState?.errors?.warehouse_id as string}
                   />
                   {isSingleWarehouse && (
+                    <p className='text-[10px] font-bold text-base-content/40 uppercase tracking-widest mt-2'>
+                      Otomatis terpilih
+                    </p>
+                  )}
+                </div>
+
+                {/* Cashier */}
+                <div className='bg-white rounded-2xl p-4 border border-base-200 premium-shadow'>
+                  <div className='flex items-center gap-3 mb-4'>
+                    <div className='w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center'>
+                      <User className='text-purple-500' size={18} />
+                    </div>
+                    <div>
+                      <h3 className='text-[10px] font-black uppercase tracking-widest text-base-content/40'>
+                        Cashier
+                      </h3>
+                      <p className='text-sm font-black text-base-content uppercase tracking-tight'>
+                        Penanggung Jawab
+                      </p>
+                    </div>
+                  </div>
+
+                  <RemoteSelect<Cashier>
+                    hook={cashierResult as any}
+                    fetchData={(page, search) => getCashier({ page, search })}
+                    getLabel={(item: any) => item?.name}
+                    value={cashier}
+                    disabled={isSingleCashier}
+                    onChange={(item: Cashier) => {
+                      setCashier(item);
+                    }}
+                    placeholder='Pilih cashier'
+                    error={FormState?.errors?.picked_up_by as string}
+                  />
+                  {isSingleCashier && (
                     <p className='text-[10px] font-bold text-base-content/40 uppercase tracking-widest mt-2'>
                       Otomatis terpilih
                     </p>
